@@ -1,0 +1,6 @@
+{
+  "name": "AI Mock Interviewer",
+  "description": "MVP for AI-powered technical mock interviews for Intern/Fresher Backend Developers.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
