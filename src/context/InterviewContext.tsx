@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { Interview, Question, QuestionEvaluation, TopicId, Difficulty, UserStats } from '../types/interview';
 import { INITIAL_RECENT_INTERVIEWS, computeUserStats } from '../data/mockData';
-import { MOCK_QUESTIONS, TOPICS, generateMockEvaluation } from '../data/mockQuestions';
+import { TOPICS, generateMockEvaluation, getQuestions } from '../data/mockQuestions';
 import { useAuth } from './AuthContext';
 
 interface InterviewContextType {
@@ -63,16 +63,15 @@ export const InterviewProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     const topicInfo = TOPICS.find((t) => t.id === topicId);
     const topicTitle = topicInfo ? topicInfo.title : topicId;
 
-    // Filter questions matching topic or matching general categories
-    let matchingQuestions = MOCK_QUESTIONS.filter((q) => q.topic === topicId && q.difficulty === difficulty);
+    const allQuestions = getQuestions();
+
+    let matchingQuestions = allQuestions.filter((q) => q.topic === topicId && q.difficulty === difficulty);
     if (matchingQuestions.length < questionCount) {
-      // fill with same topic other difficulties or fallback questions
-      const otherDifficultyQuestions = MOCK_QUESTIONS.filter((q) => q.topic === topicId && q.difficulty !== difficulty);
+      const otherDifficultyQuestions = allQuestions.filter((q) => q.topic === topicId && q.difficulty !== difficulty);
       matchingQuestions = [...matchingQuestions, ...otherDifficultyQuestions];
     }
     if (matchingQuestions.length < questionCount) {
-      // fallback fill
-      matchingQuestions = [...matchingQuestions, ...MOCK_QUESTIONS];
+      matchingQuestions = [...matchingQuestions, ...allQuestions];
     }
 
     // Select required count

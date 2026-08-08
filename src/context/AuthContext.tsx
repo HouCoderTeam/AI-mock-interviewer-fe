@@ -5,6 +5,7 @@ import { INITIAL_USER } from '../data/mockData';
 interface AuthContextType {
   user: User | null;
   isAuthenticated: boolean;
+  isAdmin: boolean;
   login: (email: string, pass: string) => Promise<boolean>;
   register: (name: string, email: string, pass: string) => Promise<boolean>;
   logout: () => void;
@@ -12,6 +13,8 @@ interface AuthContextType {
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
+const ADMIN_EMAIL = 'admin@webluyenpv.com';
+const ADMIN_PASSWORD = 'admin123';
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(() => {
@@ -23,7 +26,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         return INITIAL_USER;
       }
     }
-    return INITIAL_USER; // Default logged in as demo user for easy preview
+    return INITIAL_USER;
   });
 
   useEffect(() => {
@@ -34,9 +37,21 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   }, [user]);
 
-  const login = async (email: string, _pass: string): Promise<boolean> => {
-    // Simulate Spring Boot REST API POST /api/v1/auth/login
+  const login = async (email: string, pass: string): Promise<boolean> => {
     await new Promise((resolve) => setTimeout(resolve, 600));
+
+    if (email.trim().toLowerCase() === ADMIN_EMAIL && pass === ADMIN_PASSWORD) {
+      const adminUser: User = {
+        id: 'admin-001',
+        name: 'Administrator',
+        email: ADMIN_EMAIL,
+        avatarUrl: INITIAL_USER.avatarUrl,
+        role: 'admin',
+      };
+      setUser(adminUser);
+      return true;
+    }
+
     const loggedUser: User = {
       id: 'usr-' + Date.now(),
       name: email.split('@')[0].toUpperCase(),
@@ -49,7 +64,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const register = async (name: string, email: string, _pass: string): Promise<boolean> => {
-    // Simulate Spring Boot REST API POST /api/v1/auth/register
     await new Promise((resolve) => setTimeout(resolve, 600));
     const newUser: User = {
       id: 'usr-' + Date.now(),
@@ -75,6 +89,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       value={{
         user,
         isAuthenticated: !!user,
+        isAdmin: user?.role === 'admin',
         login,
         register,
         logout,

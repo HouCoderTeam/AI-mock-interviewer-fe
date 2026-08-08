@@ -121,6 +121,10 @@ export const Login: React.FC = () => {
             </button>
           </form>
 
+          <div className="mt-4 rounded-lg border border-indigo-100 bg-indigo-50/70 px-3 py-2 text-[11px] text-slate-600">
+            <span className="font-semibold text-indigo-700">Tài khoản admin:</span> admin@webluyenpv.com / admin123
+          </div>
+
           <div className="mt-6 pt-5 border-t border-slate-100 text-center">
             <button
               onClick={handleDemoLogin}

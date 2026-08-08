@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import { Terminal, Plus, LogOut, Menu, X, User as UserIcon, History, LayoutDashboard } from 'lucide-react';
+import { Terminal, Plus, LogOut, Menu, X, User as UserIcon, History, LayoutDashboard, ShieldCheck } from 'lucide-react';
 
 export const Navbar: React.FC = () => {
-  const { user, logout, isAuthenticated } = useAuth();
+  const { user, logout, isAuthenticated, isAdmin } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -59,6 +59,19 @@ export const Navbar: React.FC = () => {
                   <History className="w-4 h-4 text-slate-500" />
                   Phỏng vấn của tôi
                 </Link>
+                {isAdmin && (
+                  <Link
+                    to="/admin"
+                    className={`px-3.5 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 ${
+                      isActive('/admin')
+                        ? 'bg-slate-100 text-slate-900 font-semibold'
+                        : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
+                    }`}
+                  >
+                    <ShieldCheck className="w-4 h-4 text-slate-500" />
+                    Quản trị
+                  </Link>
+                )}
               </nav>
             )}
           </div>
@@ -167,6 +180,19 @@ export const Navbar: React.FC = () => {
                   <History className="w-4 h-4" />
                   Phỏng vấn của tôi
                 </Link>
+
+                {isAdmin && (
+                  <Link
+                    to="/admin"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className={`flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-sm font-medium ${
+                      isActive('/admin') ? 'bg-indigo-50 text-indigo-700 font-semibold' : 'text-slate-700'
+                    }`}
+                  >
+                    <ShieldCheck className="w-4 h-4" />
+                    Quản trị
+                  </Link>
+                )}
 
                 <Link
                   to="/new-interview"

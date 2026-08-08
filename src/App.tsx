@@ -12,12 +12,23 @@ import { NewInterview } from './pages/NewInterview';
 import { InterviewRoom } from './pages/InterviewRoom';
 import { InterviewResult } from './pages/InterviewResult';
 import { MyInterviews } from './pages/MyInterviews';
+import { AdminQuestions } from './pages/AdminQuestions';
 
-// Protected Route Wrapper
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { isAuthenticated } = useAuth();
   if (!isAuthenticated) {
     return <Navigate to="/login" replace />;
+  }
+  return <>{children}</>;
+};
+
+const AdminRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const { isAuthenticated, isAdmin } = useAuth();
+  if (!isAuthenticated) {
+    return <Navigate to="/login" replace />;
+  }
+  if (!isAdmin) {
+    return <Navigate to="/dashboard" replace />;
   }
   return <>{children}</>;
 };
@@ -84,6 +95,14 @@ function AppContent() {
               <ProtectedRoute>
                 <MyInterviews />
               </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin"
+            element={
+              <AdminRoute>
+                <AdminQuestions />
+              </AdminRoute>
             }
           />
 

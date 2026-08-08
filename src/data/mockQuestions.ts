@@ -43,6 +43,8 @@ export const TOPICS: TopicInfo[] = [
   },
 ];
 
+export const QUESTIONS_STORAGE_KEY = 'ai_mock_questions';
+
 export const MOCK_QUESTIONS: Question[] = [
   // Java Core
   {
@@ -202,6 +204,31 @@ export const MOCK_QUESTIONS: Question[] = [
 /**
  * Mock evaluation generator simulating Spring Boot API / Gemini AI response
  */
+export function getQuestions(): Question[] {
+  if (typeof window === 'undefined') {
+    return MOCK_QUESTIONS;
+  }
+
+  try {
+    const saved = localStorage.getItem(QUESTIONS_STORAGE_KEY);
+    if (!saved) {
+      return MOCK_QUESTIONS;
+    }
+    const parsed = JSON.parse(saved) as Question[];
+    return Array.isArray(parsed) && parsed.length > 0 ? parsed : MOCK_QUESTIONS;
+  } catch (error) {
+    return MOCK_QUESTIONS;
+  }
+}
+
+export function saveQuestions(questions: Question[]): void {
+  if (typeof window === 'undefined') {
+    return;
+  }
+
+  localStorage.setItem(QUESTIONS_STORAGE_KEY, JSON.stringify(questions));
+}
+
 export function generateMockEvaluation(questionText: string, userAnswer: string): QuestionEvaluation {
   const answerLength = userAnswer.trim().length;
   let score = 8;
