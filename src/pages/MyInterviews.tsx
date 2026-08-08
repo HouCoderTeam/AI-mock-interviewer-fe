@@ -32,10 +32,10 @@ export const MyInterviews: React.FC = () => {
         <div>
           <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight flex items-center gap-2">
             <History className="w-7 h-7 text-indigo-600" />
-            My Interview History
+            Lịch sử phỏng vấn của tôi
           </h1>
           <p className="text-xs sm:text-sm text-slate-600 mt-1">
-            Review past scores, detailed AI evaluation summaries, and model answers.
+            Xem điểm số, tóm tắt đánh giá chi tiết từ AI và các câu trả lời mẫu.
           </p>
         </div>
 
@@ -44,11 +44,10 @@ export const MyInterviews: React.FC = () => {
           className="inline-flex items-center gap-2 px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-xs sm:text-sm rounded-xl shadow-xs transition-colors"
         >
           <Play className="w-4 h-4 fill-current" />
-          Start New Interview
+          Bắt đầu phỏng vấn mới
         </Link>
       </div>
 
-      {/* Search & Topic Filters */}
       <div className="flex flex-col sm:flex-row items-center justify-between gap-3 bg-white p-3.5 rounded-xl border border-slate-200/80 shadow-2xs">
         <div className="relative w-full sm:w-80">
           <Search className="w-4 h-4 text-slate-400 absolute left-3 top-3 pointer-events-none" />
@@ -56,7 +55,7 @@ export const MyInterviews: React.FC = () => {
             type="text"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            placeholder="Search by topic title..."
+            placeholder="Tìm theo tên chủ đề..."
             className="w-full pl-9 pr-3 py-1.5 text-xs border border-slate-200 rounded-lg outline-none focus:border-indigo-600"
           />
         </div>
@@ -68,21 +67,20 @@ export const MyInterviews: React.FC = () => {
             onChange={(e) => setSelectedTopicFilter(e.target.value)}
             className="text-xs border border-slate-200 rounded-lg px-3 py-1.5 outline-none focus:border-indigo-600 bg-white text-slate-700"
           >
-            <option value="all">All Topics</option>
+            <option value="all">Tất cả chủ đề</option>
             <option value="java-core">Java Core</option>
-            <option value="oop">OOP Concepts</option>
+            <option value="oop">Khái niệm OOP</option>
             <option value="spring-boot">Spring Boot</option>
-            <option value="database">Database & SQL</option>
-            <option value="rest-api">REST API Design</option>
+            <option value="database">Cơ sở dữ liệu & SQL</option>
+            <option value="rest-api">Thiết kế REST API</option>
           </select>
         </div>
       </div>
 
-      {/* History Table */}
       {filteredInterviews.length === 0 ? (
         <Card>
           <CardContent className="py-12 text-center text-slate-500 text-xs">
-            No matching interview records found.
+            Không tìm thấy bản ghi phỏng vấn phù hợp.
           </CardContent>
         </Card>
       ) : (
@@ -91,13 +89,13 @@ export const MyInterviews: React.FC = () => {
             <table className="w-full text-left border-collapse">
               <thead>
                 <tr className="bg-slate-50/80 border-b border-slate-200 text-[11px] font-bold text-slate-500 uppercase tracking-wider">
-                  <th className="py-3.5 px-4 sm:px-6">Topic</th>
-                  <th className="py-3.5 px-4">Difficulty</th>
-                  <th className="py-3.5 px-4">Questions</th>
-                  <th className="py-3.5 px-4">Score</th>
-                  <th className="py-3.5 px-4">Date</th>
-                  <th className="py-3.5 px-4">Status</th>
-                  <th className="py-3.5 px-4 text-right">Action</th>
+                  <th className="py-3.5 px-4 sm:px-6">Chủ đề</th>
+                  <th className="py-3.5 px-4">Độ khó</th>
+                  <th className="py-3.5 px-4">Câu hỏi</th>
+                  <th className="py-3.5 px-4">Điểm</th>
+                  <th className="py-3.5 px-4">Ngày</th>
+                  <th className="py-3.5 px-4">Trạng thái</th>
+                  <th className="py-3.5 px-4 text-right">Hành động</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100 text-sm">
@@ -120,13 +118,13 @@ export const MyInterviews: React.FC = () => {
                       {item.averageScore ? (
                         <ScoreBadge score={item.averageScore} size="sm" />
                       ) : (
-                        <span className="text-xs text-slate-400 italic">In progress</span>
+                        <span className="text-xs text-slate-400 italic">Đang diễn ra</span>
                       )}
                     </td>
                     <td className="py-4 px-4 text-xs text-slate-500">
                       <div className="flex items-center gap-1">
                         <Calendar className="w-3.5 h-3.5 text-slate-400" />
-                        {new Date(item.createdAt).toLocaleDateString('en-US', {
+                        {new Date(item.createdAt).toLocaleDateString('vi-VN', {
                           month: 'short',
                           day: 'numeric',
                           year: 'numeric',
@@ -138,7 +136,7 @@ export const MyInterviews: React.FC = () => {
                     </td>
                     <td className="py-4 px-4 text-right">
                       <button className="text-xs font-semibold text-indigo-600 group-hover:text-indigo-800 inline-flex items-center gap-1">
-                        {item.status === 'in-progress' ? 'Resume' : 'View Report'}
+                        {item.status === 'in-progress' ? 'Tiếp tục' : 'Xem báo cáo'}
                         <ChevronRight className="w-4 h-4 text-slate-400 group-hover:text-indigo-600" />
                       </button>
                     </td>

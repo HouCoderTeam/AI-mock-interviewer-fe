@@ -8,10 +8,10 @@ export const Footer: React.FC = () => {
         <div className="flex items-center gap-2">
           <Terminal className="w-4 h-4 text-indigo-600" />
           <span className="font-semibold text-slate-700">AI Mock Interviewer</span>
-          <span>• MVP for Intern/Fresher Developers</span>
+          <span>• MVP cho lập trình viên Intern/Fresher</span>
         </div>
         <div className="text-slate-400">
-          Built with React, TypeScript & Tailwind CSS
+          Xây dựng bằng React, TypeScript & Tailwind CSS
         </div>
       </div>
     </footer>

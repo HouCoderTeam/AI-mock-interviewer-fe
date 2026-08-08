@@ -20,7 +20,6 @@ export const Navbar: React.FC = () => {
     <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
-          {/* Logo & Brand */}
           <div className="flex items-center gap-8">
             <Link to={isAuthenticated ? "/dashboard" : "/login"} className="flex items-center gap-2.5 group">
               <div className="w-9 h-9 rounded-lg bg-indigo-600 text-white flex items-center justify-center shadow-xs group-hover:bg-indigo-700 transition-colors">
@@ -36,7 +35,6 @@ export const Navbar: React.FC = () => {
               </div>
             </Link>
 
-            {/* Desktop Navigation Links */}
             {isAuthenticated && (
               <nav className="hidden md:flex items-center gap-1">
                 <Link
@@ -48,7 +46,7 @@ export const Navbar: React.FC = () => {
                   }`}
                 >
                   <LayoutDashboard className="w-4 h-4 text-slate-500" />
-                  Dashboard
+                  Bảng điều khiển
                 </Link>
                 <Link
                   to="/my-interviews"
@@ -59,13 +57,12 @@ export const Navbar: React.FC = () => {
                   }`}
                 >
                   <History className="w-4 h-4 text-slate-500" />
-                  My Interviews
+                  Phỏng vấn của tôi
                 </Link>
               </nav>
             )}
           </div>
 
-          {/* Desktop User Section */}
           {isAuthenticated ? (
             <div className="hidden md:flex items-center gap-3">
               <Link
@@ -73,7 +70,7 @@ export const Navbar: React.FC = () => {
                 className="inline-flex items-center gap-2 px-3.5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold rounded-lg shadow-xs transition-colors"
               >
                 <Plus className="w-4 h-4" />
-                Start Interview
+                Bắt đầu phỏng vấn
               </Link>
 
               <div className="h-6 w-px bg-slate-200 mx-1" />
@@ -91,7 +88,7 @@ export const Navbar: React.FC = () => {
 
                 <button
                   onClick={handleLogout}
-                  title="Logout"
+                  title="Đăng xuất"
                   className="p-2 text-slate-500 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors"
                 >
                   <LogOut className="w-4 h-4" />
@@ -104,18 +101,17 @@ export const Navbar: React.FC = () => {
                 to="/login"
                 className="px-4 py-2 text-sm font-medium text-slate-700 hover:text-slate-900 hover:bg-slate-50 rounded-lg"
               >
-                Sign In
+                Đăng nhập
               </Link>
               <Link
                 to="/register"
                 className="px-4 py-2 text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-700 rounded-lg shadow-xs"
               >
-                Register
+                Đăng ký
               </Link>
             </div>
           )}
 
-          {/* Mobile hamburger button */}
           <div className="flex md:hidden items-center gap-2">
             {isAuthenticated && (
               <Link
@@ -135,7 +131,6 @@ export const Navbar: React.FC = () => {
         </div>
       </div>
 
-      {/* Mobile Drawer Menu */}
       {mobileMenuOpen && (
         <div className="md:hidden border-b border-slate-200 bg-white px-4 pt-2 pb-4 space-y-3">
           {isAuthenticated ? (
@@ -159,7 +154,7 @@ export const Navbar: React.FC = () => {
                   }`}
                 >
                   <LayoutDashboard className="w-4 h-4" />
-                  Dashboard
+                  Bảng điều khiển
                 </Link>
 
                 <Link
@@ -170,7 +165,7 @@ export const Navbar: React.FC = () => {
                   }`}
                 >
                   <History className="w-4 h-4" />
-                  My Interviews
+                  Phỏng vấn của tôi
                 </Link>
 
                 <Link
@@ -179,7 +174,7 @@ export const Navbar: React.FC = () => {
                   className="flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-sm font-medium bg-indigo-600 text-white"
                 >
                   <Plus className="w-4 h-4" />
-                  Start New Interview
+                  Bắt đầu phỏng vấn mới
                 </Link>
               </div>
 
@@ -192,7 +187,7 @@ export const Navbar: React.FC = () => {
                   className="w-full flex items-center gap-2.5 px-3 py-2 text-rose-600 font-medium text-sm hover:bg-rose-50 rounded-lg"
                 >
                   <LogOut className="w-4 h-4" />
-                  Log Out
+                  Đăng xuất
                 </button>
               </div>
             </>
@@ -203,14 +198,14 @@ export const Navbar: React.FC = () => {
                 onClick={() => setMobileMenuOpen(false)}
                 className="block text-center py-2 text-sm font-medium text-slate-700 bg-slate-100 rounded-lg"
               >
-                Sign In
+                Đăng nhập
               </Link>
               <Link
                 to="/register"
                 onClick={() => setMobileMenuOpen(false)}
                 className="block text-center py-2 text-sm font-semibold text-white bg-indigo-600 rounded-lg"
               >
-                Register
+                Đăng ký
               </Link>
             </div>
           )}

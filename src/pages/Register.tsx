@@ -19,22 +19,22 @@ export const Register: React.FC = () => {
     setError('');
 
     if (!fullName.trim() || !email.trim() || !password || !confirmPassword) {
-      setError('Please complete all required fields.');
+      setError('Vui lòng điền đầy đủ các trường bắt buộc.');
       return;
     }
 
     if (!email.includes('@')) {
-      setError('Please provide a valid email address.');
+      setError('Vui lòng nhập email hợp lệ.');
       return;
     }
 
     if (password.length < 6) {
-      setError('Password must be at least 6 characters long.');
+      setError('Mật khẩu phải có ít nhất 6 ký tự.');
       return;
     }
 
     if (password !== confirmPassword) {
-      setError('Passwords do not match. Please try again.');
+      setError('Mật khẩu không khớp. Vui lòng thử lại.');
       return;
     }
 
@@ -43,7 +43,7 @@ export const Register: React.FC = () => {
       await register(fullName, email, password);
       navigate('/dashboard');
     } catch (err) {
-      setError('Registration failed. Please try again.');
+      setError('Đăng ký thất bại. Vui lòng thử lại.');
     } finally {
       setIsLoading(false);
     }
@@ -56,10 +56,10 @@ export const Register: React.FC = () => {
           <Terminal className="w-6 h-6" />
         </div>
         <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
-          Create an Account
+          Tạo tài khoản
         </h2>
         <p className="mt-1.5 text-sm text-slate-600">
-          Start practicing Java & Spring Boot interviews with AI
+          Bắt đầu luyện phỏng vấn Java & Spring Boot với AI
         </p>
       </div>
 
@@ -75,7 +75,7 @@ export const Register: React.FC = () => {
 
             <div>
               <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">
-                Full Name
+                Họ và tên
               </label>
               <div className="relative rounded-lg shadow-2xs">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
@@ -85,7 +85,7 @@ export const Register: React.FC = () => {
                   type="text"
                   value={fullName}
                   onChange={(e) => setFullName(e.target.value)}
-                  placeholder="Tran Van Nam"
+                  placeholder="Trần Văn Nam"
                   className="block w-full pl-9 pr-3 py-2.5 text-sm border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-600 outline-none transition-all placeholder:text-slate-400"
                 />
               </div>
@@ -93,7 +93,7 @@ export const Register: React.FC = () => {
 
             <div>
               <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">
-                Email address
+                Địa chỉ email
               </label>
               <div className="relative rounded-lg shadow-2xs">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
@@ -111,7 +111,7 @@ export const Register: React.FC = () => {
 
             <div>
               <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">
-                Password
+                Mật khẩu
               </label>
               <div className="relative rounded-lg shadow-2xs">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
@@ -121,7 +121,7 @@ export const Register: React.FC = () => {
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  placeholder="At least 6 characters"
+                  placeholder="Ít nhất 6 ký tự"
                   className="block w-full pl-9 pr-3 py-2.5 text-sm border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-600 outline-none transition-all placeholder:text-slate-400"
                 />
               </div>
@@ -129,7 +129,7 @@ export const Register: React.FC = () => {
 
             <div>
               <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">
-                Confirm Password
+                Xác nhận mật khẩu
               </label>
               <div className="relative rounded-lg shadow-2xs">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
@@ -139,7 +139,7 @@ export const Register: React.FC = () => {
                   type="password"
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
-                  placeholder="Re-enter password"
+                  placeholder="Nhập lại mật khẩu"
                   className="block w-full pl-9 pr-3 py-2.5 text-sm border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-600 outline-none transition-all placeholder:text-slate-400"
                 />
               </div>
@@ -153,11 +153,11 @@ export const Register: React.FC = () => {
               {isLoading ? (
                 <span className="inline-flex items-center gap-2">
                   <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                  Registering...
+                  Đang đăng ký...
                 </span>
               ) : (
                 <>
-                  Create Account
+                  Tạo tài khoản
                   <ArrowRight className="w-4 h-4" />
                 </>
               )}
@@ -165,9 +165,9 @@ export const Register: React.FC = () => {
           </form>
 
           <p className="mt-6 text-center text-xs text-slate-600">
-            Already have an account?{' '}
+            Đã có tài khoản?{' '}
             <Link to="/login" className="font-semibold text-indigo-600 hover:text-indigo-800 underline">
-              Sign in here
+              Đăng nhập ngay
             </Link>
           </p>
         </div>

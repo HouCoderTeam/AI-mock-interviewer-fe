@@ -50,10 +50,10 @@ export const NewInterview: React.FC = () => {
     <div className="max-w-4xl mx-auto px-4 sm:px-6 py-8 space-y-8">
       <div>
         <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
-          Setup New AI Mock Interview
+          Thiết lập buổi phỏng vấn AI mới
         </h1>
         <p className="mt-1 text-sm text-slate-600">
-          Configure your preferred technical topic, difficulty level, and session length.
+          Cấu hình chủ đề kỹ thuật, mức độ khó và thời lượng buổi luyện phù hợp với bạn.
         </p>
       </div>
 
@@ -61,15 +61,14 @@ export const NewInterview: React.FC = () => {
         <CardHeader className="bg-slate-50/50">
           <div className="flex items-center gap-2">
             <Sliders className="w-5 h-5 text-indigo-600" />
-            <h2 className="text-base font-bold text-slate-900">Interview Configuration</h2>
+            <h2 className="text-base font-bold text-slate-900">Cấu hình buổi phỏng vấn</h2>
           </div>
         </CardHeader>
 
         <CardContent className="space-y-8 p-6">
-          {/* 1. Topic Selection */}
           <div>
             <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-3">
-              1. Select Technical Topic
+              1. Chọn chủ đề kỹ thuật
             </label>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
               {TOPICS.map((topic) => {
@@ -99,7 +98,7 @@ export const NewInterview: React.FC = () => {
                       </p>
                     </div>
                     <div className="mt-3 pt-2 border-t border-slate-100 text-[10px] font-medium text-slate-400">
-                      Popular for: {topic.popularFor}
+                      Phổ biến cho: {topic.popularFor}
                     </div>
                   </div>
                 );
@@ -107,10 +106,9 @@ export const NewInterview: React.FC = () => {
             </div>
           </div>
 
-          {/* 2. Difficulty Selection */}
           <div>
             <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-3">
-              2. Select Difficulty Level
+              2. Chọn mức độ khó
             </label>
             <div className="grid grid-cols-3 gap-3">
               {(['easy', 'medium', 'hard'] as Difficulty[]).map((diff) => {
@@ -132,12 +130,12 @@ export const NewInterview: React.FC = () => {
                   >
                     <div className="flex flex-col items-center gap-1.5">
                       <span className={`px-2.5 py-0.5 rounded-md text-xs font-bold border ${badgeColor}`}>
-                        {diff}
+                        {diff === 'easy' ? 'Dễ' : diff === 'medium' ? 'Trung bình' : 'Khó'}
                       </span>
                       <span className="text-[11px] text-slate-500 font-normal">
-                        {diff === 'easy' && 'Intern / Basic concepts'}
-                        {diff === 'medium' && 'Fresher / Standard technical'}
-                        {diff === 'hard' && 'Advanced / Internal mechanics'}
+                        {diff === 'easy' && 'Intern / Khái niệm cơ bản'}
+                        {diff === 'medium' && 'Fresher / Kỹ thuật chuẩn'}
+                        {diff === 'hard' && 'Nâng cao / Cơ chế bên trong'}
                       </span>
                     </div>
                   </button>
@@ -146,10 +144,9 @@ export const NewInterview: React.FC = () => {
             </div>
           </div>
 
-          {/* 3. Number of Questions */}
           <div>
             <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-3">
-              3. Number of Questions
+              3. Số câu hỏi
             </label>
             <div className="grid grid-cols-2 gap-4 max-w-md">
               {[5, 10].map((count) => {
@@ -168,16 +165,16 @@ export const NewInterview: React.FC = () => {
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
                         <HelpCircle className={`w-4 h-4 ${isSelected ? 'text-indigo-600' : 'text-slate-400'}`} />
-                        <span className="font-bold text-slate-900 text-sm">{count} Questions</span>
+                        <span className="font-bold text-slate-900 text-sm">{count} câu hỏi</span>
                       </div>
                       {count === 5 && (
                         <span className="text-[10px] font-bold text-indigo-600 uppercase bg-indigo-100 px-2 py-0.5 rounded">
-                          Recommended
+                          Khuyến nghị
                         </span>
                       )}
                     </div>
                     <p className="text-xs text-slate-500 mt-1">
-                      {count === 5 ? 'Approx. 10 - 15 minutes' : 'Approx. 20 - 30 minutes'}
+                      {count === 5 ? 'Khoảng 10 - 15 phút' : 'Khoảng 20 - 30 phút'}
                     </p>
                   </button>
                 );
@@ -188,14 +185,14 @@ export const NewInterview: React.FC = () => {
 
         <CardFooter className="flex items-center justify-between">
           <p className="text-xs text-slate-500">
-            Selected: <span className="font-bold text-slate-900 uppercase">{selectedTopic}</span> • <span className="font-bold text-slate-900 uppercase">{selectedDifficulty}</span> • <span className="font-bold text-slate-900">{questionCount} Qs</span>
+            Đã chọn: <span className="font-bold text-slate-900 uppercase">{selectedTopic}</span> • <span className="font-bold text-slate-900 uppercase">{selectedDifficulty === 'easy' ? 'Dễ' : selectedDifficulty === 'medium' ? 'Trung bình' : 'Khó'}</span> • <span className="font-bold text-slate-900">{questionCount} câu</span>
           </p>
           <button
             onClick={handleStart}
             className="inline-flex items-center gap-2 px-6 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-sm rounded-xl shadow-xs transition-colors cursor-pointer"
           >
             <Play className="w-4 h-4 fill-current" />
-            Start Interview Room
+            Bắt đầu phòng phỏng vấn
           </button>
         </CardFooter>
       </Card>
