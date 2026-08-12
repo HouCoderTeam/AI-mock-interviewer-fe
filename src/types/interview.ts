@@ -1,4 +1,4 @@
-export type TopicId = 'java-core' | 'oop' | 'spring-boot' | 'database' | 'rest-api';
+export type TopicId = 'java-core' | 'oop' | 'spring-boot' | 'database' | 'rest-api' | 'custom-cv-jd';
 
 export type Difficulty = 'easy' | 'medium' | 'hard';
 
@@ -40,6 +40,13 @@ export interface QuestionEvaluation {
   evaluatedAt: string;
 }
 
+export interface CustomInterviewMeta {
+  jobTitle?: string;
+  cvText?: string;
+  jdText?: string;
+  source: 'manual' | 'cv-jd';
+}
+
 export interface Interview {
   id: string;
   userId: string;
@@ -55,6 +62,7 @@ export interface Interview {
   completedAt?: string;
   evaluations: QuestionEvaluation[];
   overallFeedback?: string;
+  customMeta?: CustomInterviewMeta;
 }
 
 export interface UserStats {

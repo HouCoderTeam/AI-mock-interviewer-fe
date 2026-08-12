@@ -14,7 +14,7 @@ import {
 
 export const InterviewResult: React.FC = () => {
   const { id } = useParams<{ id: string }>();
-  const { currentInterview, getInterviewById, startNewInterview } = useInterview();
+  const { currentInterview, getInterviewById, startNewInterview, startCustomInterview } = useInterview();
   const navigate = useNavigate();
 
   const interview = id ? getInterviewById(id) || currentInterview : currentInterview;
@@ -38,6 +38,20 @@ export const InterviewResult: React.FC = () => {
   const averageScore = interview.averageScore || 0;
 
   const handleTryAgain = () => {
+    if (interview.topic === 'custom-cv-jd') {
+      if (interview.customMeta?.jobTitle && interview.customMeta?.cvText && interview.customMeta?.jdText) {
+        const { jobTitle, cvText, jdText } = interview.customMeta;
+        startCustomInterview({
+          jobTitle,
+          cvText,
+          jdText,
+          questionCount: interview.totalQuestions,
+        });
+        navigate('/interview-room');
+        return;
+      }
+    }
+
     startNewInterview(interview.topic, interview.difficulty, interview.totalQuestions);
     navigate('/interview-room');
   };
@@ -110,20 +124,52 @@ export const InterviewResult: React.FC = () => {
         </div>
       </div>
 
-      <Card className="border-indigo-100 bg-indigo-50/30">
-        <CardHeader className="bg-white/80">
-          <div className="flex items-center gap-2">
-            <Sparkles className="w-5 h-5 text-indigo-600" />
-            <h2 className="text-base font-bold text-slate-900">Đánh giá tổng thể và khuyến nghị</h2>
-          </div>
-        </CardHeader>
-        <CardContent className="p-6">
-          <p className="text-sm text-slate-700 leading-relaxed">
-            {interview.overallFeedback ||
-              `Bạn đã hoàn thành buổi phỏng vấn ${interview.topicTitle} với điểm trung bình ${averageScore}/10. Bạn thể hiện sự hiểu biết tốt về các khái niệm cốt lõi. Hãy luyện cách diễn giải chi tiết các cơ chế runtime và ví dụ code để đạt kết quả tốt hơn.`}
-          </p>
-        </CardContent>
-      </Card>
+      {interview.customMeta && (
+        <Card className="border-indigo-100 bg-indigo-50/30">
+          <CardHeader className="bg-white/80">
+            <div className="flex items-center gap-2">
+              <Sparkles className="w-5 h-5 text-indigo-600" />
+              <h2 className="text-base font-bold text-slate-900">Thông tin CV/JD và độ phù hợp</h2>
+            </div>
+          </CardHeader>
+          <CardContent className="p-6 space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="bg-white border border-slate-200 rounded-xl p-4">
+                <p className="text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-1">Vị trí</p>
+                <p className="text-sm font-semibold text-slate-900">{interview.customMeta.jobTitle}</p>
+              </div>
+              <div className="bg-white border border-slate-200 rounded-xl p-4">
+                <p className="text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-1">Số câu hỏi</p>
+                <p className="text-sm font-semibold text-slate-900">{interview.totalQuestions} câu</p>
+              </div>
+            </div>
+            <div className="bg-white border border-slate-200 rounded-xl p-4">
+              <p className="text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-2">Độ phù hợp CV/JD</p>
+              <p className="text-sm text-slate-700 leading-relaxed">
+                {interview.overallFeedback ||
+                  `Bạn đã hoàn thành buổi phỏng vấn theo CV/JD cho vị trí ${interview.customMeta.jobTitle}. Điểm trung bình của bạn là ${averageScore}/10. Kết quả cho thấy bạn đã nêu rõ điểm mạnh và sự phù hợp với yêu cầu công việc. Hãy củng cố thêm các kỹ năng còn thiếu theo JD để tăng khả năng vượt qua vòng phỏng vấn.`}
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {!interview.customMeta && (
+        <Card className="border-indigo-100 bg-indigo-50/30">
+          <CardHeader className="bg-white/80">
+            <div className="flex items-center gap-2">
+              <Sparkles className="w-5 h-5 text-indigo-600" />
+              <h2 className="text-base font-bold text-slate-900">Đánh giá tổng thể và khuyến nghị</h2>
+            </div>
+          </CardHeader>
+          <CardContent className="p-6">
+            <p className="text-sm text-slate-700 leading-relaxed">
+              {interview.overallFeedback ||
+                `Bạn đã hoàn thành buổi phỏng vấn ${interview.topicTitle} với điểm trung bình ${averageScore}/10. Bạn thể hiện sự hiểu biết tốt về các khái niệm cốt lõi. Hãy luyện cách diễn giải chi tiết các cơ chế runtime và ví dụ code để đạt kết quả tốt hơn.`}
+            </p>
+          </CardContent>
+        </Card>
+      )}
 
       <div className="space-y-6">
         <div className="flex items-center gap-2 pb-2 border-b border-slate-200">

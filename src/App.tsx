@@ -9,6 +9,7 @@ import { Login } from './pages/Login';
 import { Register } from './pages/Register';
 import { Dashboard } from './pages/Dashboard';
 import { NewInterview } from './pages/NewInterview';
+import { CustomInterview } from './pages/CustomInterview';
 import { InterviewRoom } from './pages/InterviewRoom';
 import { InterviewResult } from './pages/InterviewResult';
 import { MyInterviews } from './pages/MyInterviews';
@@ -62,6 +63,14 @@ function AppContent() {
             element={
               <ProtectedRoute>
                 <NewInterview />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/custom-interview"
+            element={
+              <ProtectedRoute>
+                <CustomInterview />
               </ProtectedRoute>
             }
           />

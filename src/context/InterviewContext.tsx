@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { Interview, Question, QuestionEvaluation, TopicId, Difficulty, UserStats } from '../types/interview';
 import { INITIAL_RECENT_INTERVIEWS, computeUserStats } from '../data/mockData';
-import { TOPICS, generateMockEvaluation, getQuestions } from '../data/mockQuestions';
+import { TOPICS, generateMockEvaluation, getQuestions, generateCustomQuestions } from '../data/mockQuestions';
 import { useAuth } from './AuthContext';
 
 interface InterviewContextType {
@@ -10,6 +10,12 @@ interface InterviewContextType {
   userStats: UserStats;
   isEvaluating: boolean;
   startNewInterview: (topicId: TopicId, difficulty: Difficulty, questionCount: number) => Interview;
+  startCustomInterview: (params: {
+    jobTitle: string;
+    cvText: string;
+    jdText: string;
+    questionCount: number;
+  }) => Interview;
   submitAnswer: (answerText: string) => Promise<QuestionEvaluation>;
   finishCurrentInterview: () => void;
   getInterviewById: (id: string) => Interview | undefined;
@@ -99,6 +105,45 @@ export const InterviewProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     return newInterview;
   };
 
+  const startCustomInterview = ({ jobTitle, cvText, jdText, questionCount }: {
+    jobTitle: string;
+    cvText: string;
+    jdText: string;
+    questionCount: number;
+  }): Interview => {
+    const safeJobTitle = jobTitle.trim() || 'Backend Developer';
+    const customQuestions = generateCustomQuestions({
+      jobTitle: safeJobTitle,
+      cvText,
+      jdText,
+      questionCount,
+    });
+
+    const newInterview: Interview = {
+      id: `intv-custom-${Date.now()}`,
+      userId: user?.id || 'usr-101',
+      topic: 'custom-cv-jd',
+      topicTitle: `CV/JD - ${safeJobTitle}`,
+      difficulty: 'medium',
+      totalQuestions: customQuestions.length,
+      questions: customQuestions,
+      currentQuestionIndex: 0,
+      status: 'in-progress',
+      createdAt: new Date().toISOString(),
+      evaluations: [],
+      customMeta: {
+        jobTitle: safeJobTitle,
+        cvText,
+        jdText,
+        source: 'cv-jd',
+      },
+    };
+
+    setCurrentInterview(newInterview);
+    setInterviews((prev) => [newInterview, ...prev]);
+    return newInterview;
+  };
+
   const submitAnswer = async (answerText: string): Promise<QuestionEvaluation> => {
     if (!currentInterview) {
       throw new Error('No active interview session found');
@@ -180,6 +225,7 @@ export const InterviewProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         userStats,
         isEvaluating,
         startNewInterview,
+        startCustomInterview,
         submitAnswer,
         finishCurrentInterview,
         getInterviewById,

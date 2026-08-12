@@ -26,6 +26,10 @@ export const Dashboard: React.FC = () => {
     navigate('/new-interview');
   };
 
+  const handleStartCustomInterview = () => {
+    navigate('/custom-interview');
+  };
+
   const handleViewInterview = (interviewId: string, status: string) => {
     if (status === 'in-progress') {
       navigate('/interview-room');
@@ -50,19 +54,19 @@ export const Dashboard: React.FC = () => {
           </p>
           <div className="pt-2 flex flex-wrap items-center gap-3">
             <button
-              onClick={handleStartInterview}
+              onClick={handleStartCustomInterview}
               className="inline-flex items-center gap-2 px-5 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-sm rounded-xl shadow-sm transition-colors cursor-pointer"
             >
               <Play className="w-4 h-4 fill-current" />
-              Bắt đầu phỏng vấn mới
+              Phỏng vấn CV + JD
             </button>
-            <Link
-              to="/my-interviews"
+            <button
+              onClick={handleStartInterview}
               className="inline-flex items-center gap-2 px-4 py-2.5 bg-slate-800/80 hover:bg-slate-800 text-slate-200 border border-slate-700 font-medium text-sm rounded-xl transition-colors"
             >
               <BookOpen className="w-4 h-4 text-slate-400" />
-              Xem lịch sử
-            </Link>
+              Phỏng vấn mẫu
+            </button>
           </div>
         </div>
         <div className="absolute right-0 bottom-0 top-0 opacity-10 pointer-events-none hidden lg:block pr-8">

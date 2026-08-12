@@ -229,6 +229,75 @@ export function saveQuestions(questions: Question[]): void {
   localStorage.setItem(QUESTIONS_STORAGE_KEY, JSON.stringify(questions));
 }
 
+export function generateCustomQuestions({
+  jobTitle,
+  cvText,
+  jdText,
+  questionCount,
+}: {
+  jobTitle: string;
+  cvText: string;
+  jdText: string;
+  questionCount: number;
+}): Question[] {
+  const cvKeywords = extractKeywords(cvText);
+  const jdKeywords = extractKeywords(jdText);
+  const roleKeywords = [...new Set([...cvKeywords, ...jdKeywords])].slice(0, 12);
+  const safeCount = Math.max(1, Math.min(questionCount, 20));
+
+  const templates = [
+    `Bạn hãy mô tả ngắn gọn các kinh nghiệm và dự án quan trọng nhất trong CV của bạn phù hợp với vị trí ${jobTitle}.`,
+    `Theo JD, kỹ năng nào trong số ${roleKeywords.slice(0, 3).join(', ') || 'kỹ năng chính'} là bạn thấy mình mạnh nhất và tại sao?`,
+    `Hãy kể một dự án mà bạn đã làm và giải thích cách bạn áp dụng ${roleKeywords.slice(0, 2).join(' và ') || 'các kỹ năng chuyên môn'} trong thực tế.`,
+    `Nếu được so sánh với JD, phần nào trong CV của bạn đang thể hiện sự phù hợp nhất với vai trò ${jobTitle}?`,
+    `Bạn sẽ giải thích bằng cách nào để chứng minh bạn có thể đóng góp hiệu quả cho công việc này trong 3 tháng đầu tiên?`,
+    `Với yêu cầu từ JD, điểm nào bạn chưa có hoặc còn yếu và bạn đang làm gì để cải thiện?`,
+    `Hãy mô tả một tình huống bạn từng xử lý vấn đề khó, và cách bạn suy nghĩ, phân tích và đưa ra giải pháp.`,
+    `Theo mô tả công việc, bạn nghĩ kỹ năng nào là tiêu chí cốt lõi để đánh giá một ứng viên ở vị trí ${jobTitle}?`,
+    `Bạn sẽ trình bày lời giải thích về cách bạn làm việc nhóm, giao tiếp, và phối hợp với đồng nghiệp như thế nào trong dự án thực tế?`,
+    `Nếu bạn được hỏi trong vòng phỏng vấn trực tiếp, bạn sẽ nhấn mạnh điều gì trong CV để khiến nhà tuyển dụng tin rằng bạn phù hợp với JD này?`,
+    `Hãy chia sẻ thời điểm bạn đã tối ưu hiệu suất, giảm chi phí, hoặc cải thiện chất lượng hệ thống trong dự án của mình.`,
+    `Bạn hãy phản biện lại JD này: yếu tố nào bạn thấy phù hợp với bản thân, yếu tố nào bạn cần làm rõ trong buổi phỏng vấn?`,
+    `Nêu một ví dụ cụ thể bạn đã làm việc với ${roleKeywords.slice(0, 2).join(' và ') || 'công nghệ cốt lõi'} và kết quả đạt được là gì.`,
+    `Nếu bạn là ứng viên cho vị trí ${jobTitle}, bạn sẽ tự đánh giá mức độ phù hợp của mình theo thang 10 và giải thích lý do.`,
+    `Bạn có thể mô tả một dự án bạn đã làm mà có nhiều điểm tương đồng với JD này, và trách nhiệm của bạn trong đó là gì?`,
+    `Theo bạn, đâu là thách thức lớn nhất khi làm việc ở vai trò ${jobTitle}, và bạn đã chuẩn bị cách đối phó như thế nào?`,
+    `Nêu một quyết định kỹ thuật quan trọng bạn đã thực hiện để giải quyết vấn đề thực tế trong dự án của mình.`,
+    `Nếu người phỏng vấn hỏi về khoảng trống trong CV của bạn, bạn sẽ giải thích thế nào để không làm giảm điểm số của mình?`,
+    `Bạn hãy nói rõ bạn đã từng làm việc với công nghệ nào, khó khăn nào gặp phải và cách bạn vượt qua.`,
+    `Tại sao bạn tin rằng kinh nghiệm và kỹ năng của bạn phù hợp với JD này hơn so với các ứng viên khác?`,
+  ];
+
+  const questions: Question[] = Array.from({ length: safeCount }, (_, index) => ({
+    id: `q-custom-${Date.now()}-${index + 1}`,
+    topic: 'custom-cv-jd',
+    difficulty: index % 4 === 0 ? 'hard' : index % 2 === 0 ? 'medium' : 'easy',
+    questionText: templates[index % templates.length],
+    category: 'CV / JD Fit',
+    hint: 'Trả lời theo kiểu phỏng vấn thực tế: giải thích bằng ví dụ cụ thể, nhấn mạnh điểm mạnh liên quan tới JD và nêu cách bạn xử lý điểm yếu.',
+  }));
+
+  return questions;
+}
+
+function extractKeywords(text: string): string[] {
+  const cleaned = text
+    .toLowerCase()
+    .replace(/[^\p{L}\p{N}\s]/gu, ' ')
+    .split(/\s+/)
+    .filter((word) => word.length > 3 && !['with', 'that', 'from', 'this', 'your', 'have', 'will', 'they', 'them', 'into', 'upon', 'about', 'were', 'work', 'using', 'project', 'skills', 'company', 'experience', 'developer', 'software', 'role'].includes(word));
+
+  const counts = new Map<string, number>();
+  for (const word of cleaned) {
+    counts.set(word, (counts.get(word) ?? 0) + 1);
+  }
+
+  return [...counts.entries()]
+    .sort((a, b) => b[1] - a[1])
+    .map(([word]) => word)
+    .slice(0, 10);
+}
+
 export function generateMockEvaluation(questionText: string, userAnswer: string): QuestionEvaluation {
   const answerLength = userAnswer.trim().length;
   let score = 8;

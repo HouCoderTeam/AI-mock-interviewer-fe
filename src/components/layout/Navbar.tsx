@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import { Terminal, Plus, LogOut, Menu, X, User as UserIcon, History, LayoutDashboard, ShieldCheck } from 'lucide-react';
+import { Terminal, Plus, LogOut, Menu, X, User as UserIcon, History, LayoutDashboard, ShieldCheck, FileText } from 'lucide-react';
 
 export const Navbar: React.FC = () => {
   const { user, logout, isAuthenticated, isAdmin } = useAuth();
@@ -78,6 +78,14 @@ export const Navbar: React.FC = () => {
 
           {isAuthenticated ? (
             <div className="hidden md:flex items-center gap-3">
+              <Link
+                to="/custom-interview"
+                className="inline-flex items-center gap-2 px-3.5 py-2 border border-indigo-200 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-sm font-semibold rounded-lg shadow-xs transition-colors"
+              >
+                <FileText className="w-4 h-4" />
+                CV + JD
+              </Link>
+
               <Link
                 to="/new-interview"
                 className="inline-flex items-center gap-2 px-3.5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold rounded-lg shadow-xs transition-colors"
@@ -193,6 +201,15 @@ export const Navbar: React.FC = () => {
                     Quản trị
                   </Link>
                 )}
+
+                <Link
+                  to="/custom-interview"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-sm font-medium bg-indigo-50 text-indigo-700 border border-indigo-200"
+                >
+                  <FileText className="w-4 h-4" />
+                  Phỏng vấn CV + JD
+                </Link>
 
                 <Link
                   to="/new-interview"

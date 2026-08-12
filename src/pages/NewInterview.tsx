@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useInterview } from '../context/InterviewContext';
 import { TOPICS } from '../data/mockQuestions';
 import { TopicId, Difficulty } from '../types/interview';
@@ -13,7 +13,8 @@ import {
   CheckCircle2,
   Play,
   Sliders,
-  HelpCircle
+  HelpCircle,
+  FileText
 } from 'lucide-react';
 
 export const NewInterview: React.FC = () => {
@@ -183,17 +184,26 @@ export const NewInterview: React.FC = () => {
           </div>
         </CardContent>
 
-        <CardFooter className="flex items-center justify-between">
+        <CardFooter className="flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="text-xs text-slate-500">
             Đã chọn: <span className="font-bold text-slate-900 uppercase">{selectedTopic}</span> • <span className="font-bold text-slate-900 uppercase">{selectedDifficulty === 'easy' ? 'Dễ' : selectedDifficulty === 'medium' ? 'Trung bình' : 'Khó'}</span> • <span className="font-bold text-slate-900">{questionCount} câu</span>
           </p>
-          <button
-            onClick={handleStart}
-            className="inline-flex items-center gap-2 px-6 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-sm rounded-xl shadow-xs transition-colors cursor-pointer"
-          >
-            <Play className="w-4 h-4 fill-current" />
-            Bắt đầu phòng phỏng vấn
-          </button>
+          <div className="flex flex-wrap items-center gap-3">
+            <Link
+              to="/custom-interview"
+              className="inline-flex items-center gap-2 px-4 py-2.5 border border-indigo-200 bg-indigo-50 text-indigo-700 hover:bg-indigo-100 font-semibold text-sm rounded-xl transition-colors"
+            >
+              <FileText className="w-4 h-4" />
+              CV + JD
+            </Link>
+            <button
+              onClick={handleStart}
+              className="inline-flex items-center gap-2 px-6 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-sm rounded-xl shadow-xs transition-colors cursor-pointer"
+            >
+              <Play className="w-4 h-4 fill-current" />
+              Bắt đầu phòng phỏng vấn
+            </button>
+          </div>
         </CardFooter>
       </Card>
     </div>
