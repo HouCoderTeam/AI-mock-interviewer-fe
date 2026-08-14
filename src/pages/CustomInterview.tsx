@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardFooter } from '../components/ui/Card
 import { Upload, FileText, BriefcaseBusiness, Sparkles, Play, AlertCircle } from 'lucide-react';
 
 export const CustomInterview: React.FC = () => {
-  const { startCustomInterview } = useInterview();
+  const { startCustomInterview, isCreating } = useInterview();
   const navigate = useNavigate();
 
   const [jobTitle, setJobTitle] = useState('Backend Developer');
@@ -39,20 +39,23 @@ export const CustomInterview: React.FC = () => {
     }
   };
 
-  const handleStart = () => {
+  const handleStart = async () => {
     if (!cvText.trim() || !jdText.trim()) {
       setError('Bạn cần tải lên hoặc paste nội dung CV và JD trước khi bắt đầu phỏng vấn.');
       return;
     }
-
-    startCustomInterview({
-      jobTitle,
-      cvText,
-      jdText,
-      questionCount,
-    });
-
-    navigate('/interview-room');
+    setError('');
+    try {
+      await startCustomInterview({
+        jobTitle,
+        cvText,
+        jdText,
+        questionCount,
+      });
+      navigate('/interview-room');
+    } catch (err: any) {
+      setError(err?.message || 'Không thể tạo buổi phỏng vấn. Vui lòng thử lại.');
+    }
   };
 
   return (
@@ -187,10 +190,20 @@ export const CustomInterview: React.FC = () => {
 
           <button
             onClick={handleStart}
-            className="inline-flex items-center gap-2 px-6 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-sm rounded-xl shadow-xs transition-colors cursor-pointer"
+            disabled={isCreating}
+            className="inline-flex items-center gap-2 px-6 py-2.5 bg-indigo-600 hover:bg-indigo-700 disabled:opacity-60 text-white font-semibold text-sm rounded-xl shadow-xs transition-colors cursor-pointer"
           >
-            <Play className="w-4 h-4 fill-current" />
-            Bắt đầu phỏng vấn
+            {isCreating ? (
+              <>
+                <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                AI đang tạo câu hỏi...
+              </>
+            ) : (
+              <>
+                <Play className="w-4 h-4 fill-current" />
+                Bắt đầu phỏng vấn
+              </>
+            )}
           </button>
         </CardFooter>
       </Card>

@@ -55,18 +55,18 @@ export const InterviewRoom: React.FC = () => {
     await submitAnswer(textToSubmit);
   };
 
-  const handleNextQuestion = () => {
+  const handleNextQuestion = async () => {
     if (isLastQuestion || currentInterview.status === 'completed') {
-      finishCurrentInterview();
+      await finishCurrentInterview();
       navigate(`/interview-result/${currentInterview.id}`);
     } else {
       window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
     }
   };
 
-  const handleQuitEarly = () => {
+  const handleQuitEarly = async () => {
     if (window.confirm('Bạn có chắc muốn kết thúc buổi phỏng vấn ngay bây giờ không?')) {
-      finishCurrentInterview();
+      await finishCurrentInterview();
       navigate('/dashboard');
     }
   };

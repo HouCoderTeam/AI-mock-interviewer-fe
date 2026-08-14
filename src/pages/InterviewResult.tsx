@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useInterview } from '../context/InterviewContext';
+import { Interview } from '../types/interview';
 import { Card, CardContent, CardHeader } from '../components/ui/Card';
 import { DifficultyBadge, ScoreBadge } from '../components/ui/Badge';
 import { EvaluationCard } from '../components/interview/EvaluationCard';
@@ -9,15 +10,54 @@ import {
   LayoutDashboard,
   CheckCircle2,
   Sparkles,
-  FileText
+  FileText,
+  Loader2
 } from 'lucide-react';
 
 export const InterviewResult: React.FC = () => {
   const { id } = useParams<{ id: string }>();
-  const { currentInterview, getInterviewById, startNewInterview, startCustomInterview } = useInterview();
+  const { currentInterview, getInterviewById, loadInterview, startNewInterview } = useInterview();
   const navigate = useNavigate();
 
-  const interview = id ? getInterviewById(id) || currentInterview : currentInterview;
+  const [interview, setInterview] = useState<Interview | null>(() =>
+    id ? getInterviewById(id) || currentInterview : currentInterview,
+  );
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    let active = true;
+    if (!id) {
+      setInterview(currentInterview);
+      return;
+    }
+    const cached = getInterviewById(id);
+    if (cached && cached.id === id && cached.questions.length > 0) {
+      setInterview(cached);
+      return;
+    }
+    setLoading(true);
+    loadInterview(id)
+      .then((d) => {
+        if (active) setInterview(d);
+      })
+      .catch(() => {})
+      .finally(() => {
+        if (active) setLoading(false);
+      });
+    return () => {
+      active = false;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [id, currentInterview]);
+
+  if (loading && !interview) {
+    return (
+      <div className="max-w-2xl mx-auto px-4 py-24 flex flex-col items-center gap-3 text-slate-500">
+        <Loader2 className="w-6 h-6 animate-spin text-indigo-600" />
+        <p className="text-sm">Đang tải kết quả phỏng vấn...</p>
+      </div>
+    );
+  }
 
   if (!interview) {
     return (
@@ -37,23 +77,18 @@ export const InterviewResult: React.FC = () => {
 
   const averageScore = interview.averageScore || 0;
 
-  const handleTryAgain = () => {
-    if (interview.topic === 'custom-cv-jd') {
-      if (interview.customMeta?.jobTitle && interview.customMeta?.cvText && interview.customMeta?.jdText) {
-        const { jobTitle, cvText, jdText } = interview.customMeta;
-        startCustomInterview({
-          jobTitle,
-          cvText,
-          jdText,
-          questionCount: interview.totalQuestions,
-        });
-        navigate('/interview-room');
-        return;
-      }
+  const handleTryAgain = async () => {
+    // Với phỏng vấn CV/JD, nội dung CV/JD không được lưu lại -> đưa người dùng nhập lại
+    if (interview.customMeta) {
+      navigate('/custom-interview');
+      return;
     }
-
-    startNewInterview(interview.topic, interview.difficulty, interview.totalQuestions);
-    navigate('/interview-room');
+    try {
+      await startNewInterview(interview.topic, interview.difficulty, interview.totalQuestions);
+      navigate('/interview-room');
+    } catch {
+      navigate('/new-interview');
+    }
   };
 
   return (

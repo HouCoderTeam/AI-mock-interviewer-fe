@@ -54,6 +54,7 @@ export interface Interview {
   topicTitle: string;
   difficulty: Difficulty;
   totalQuestions: number;
+  answeredQuestions?: number;
   questions: Question[];
   currentQuestionIndex: number;
   status: 'in-progress' | 'completed';

@@ -1,87 +1,98 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { User } from '../types/interview';
-import { INITIAL_USER } from '../data/mockData';
+import { authApi, tokenStore, ApiError } from '../lib/api';
 
 interface AuthContextType {
   user: User | null;
   isAuthenticated: boolean;
   isAdmin: boolean;
+  isInitializing: boolean;
   login: (email: string, pass: string) => Promise<boolean>;
   register: (name: string, email: string, pass: string) => Promise<boolean>;
   logout: () => void;
-  demoLogin: () => void;
+  demoLogin: () => Promise<boolean>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
-const ADMIN_EMAIL = 'admin@webluyenpv.com';
-const ADMIN_PASSWORD = 'admin123';
+
+// Tài khoản admin được seed sẵn ở backend (ApplicationInitConfig)
+const DEMO_EMAIL = 'admin@webluyenpv.com';
+const DEMO_PASSWORD = 'admin123';
+
+const USER_CACHE_KEY = 'ai_mock_user';
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(() => {
-    const saved = localStorage.getItem('ai_mock_user');
+    // Chỉ khôi phục user từ cache nếu còn token (tránh trạng thái "đăng nhập sẵn" giả)
+    if (!tokenStore.get()) return null;
+    const saved = localStorage.getItem(USER_CACHE_KEY);
     if (saved) {
       try {
         return JSON.parse(saved);
-      } catch (e) {
-        return INITIAL_USER;
+      } catch {
+        return null;
       }
     }
-    return INITIAL_USER;
+    return null;
   });
+
+  const [isInitializing, setIsInitializing] = useState<boolean>(!!tokenStore.get());
 
   useEffect(() => {
     if (user) {
-      localStorage.setItem('ai_mock_user', JSON.stringify(user));
+      localStorage.setItem(USER_CACHE_KEY, JSON.stringify(user));
     } else {
-      localStorage.removeItem('ai_mock_user');
+      localStorage.removeItem(USER_CACHE_KEY);
     }
   }, [user]);
 
-  const login = async (email: string, pass: string): Promise<boolean> => {
-    await new Promise((resolve) => setTimeout(resolve, 600));
-
-    if (email.trim().toLowerCase() === ADMIN_EMAIL && pass === ADMIN_PASSWORD) {
-      const adminUser: User = {
-        id: 'admin-001',
-        name: 'Administrator',
-        email: ADMIN_EMAIL,
-        avatarUrl: INITIAL_USER.avatarUrl,
-        role: 'admin',
-      };
-      setUser(adminUser);
-      return true;
+  // Xác thực lại token khi tải trang
+  useEffect(() => {
+    let active = true;
+    if (!tokenStore.get()) {
+      setIsInitializing(false);
+      return;
     }
-
-    const loggedUser: User = {
-      id: 'usr-' + Date.now(),
-      name: email.split('@')[0].toUpperCase(),
-      email: email,
-      avatarUrl: INITIAL_USER.avatarUrl,
-      role: 'Backend Intern / Candidate',
+    authApi
+      .me()
+      .then((u) => {
+        if (active) setUser(u);
+      })
+      .catch((e) => {
+        // Token hết hạn/không hợp lệ -> đăng xuất
+        if (e instanceof ApiError && (e.status === 401 || e.status === 400)) {
+          tokenStore.clear();
+          if (active) setUser(null);
+        }
+      })
+      .finally(() => {
+        if (active) setIsInitializing(false);
+      });
+    return () => {
+      active = false;
     };
-    setUser(loggedUser);
+  }, []);
+
+  const login = async (email: string, pass: string): Promise<boolean> => {
+    const u = await authApi.login(email.trim(), pass);
+    setUser(u);
     return true;
   };
 
-  const register = async (name: string, email: string, _pass: string): Promise<boolean> => {
-    await new Promise((resolve) => setTimeout(resolve, 600));
-    const newUser: User = {
-      id: 'usr-' + Date.now(),
-      name: name,
-      email: email,
-      avatarUrl: INITIAL_USER.avatarUrl,
-      role: 'Backend Intern / Candidate',
-    };
-    setUser(newUser);
+  const register = async (name: string, email: string, pass: string): Promise<boolean> => {
+    const u = await authApi.register(name.trim(), email.trim(), pass);
+    setUser(u);
     return true;
   };
 
   const logout = () => {
-    setUser(null);
+    authApi.logout().finally(() => setUser(null));
   };
 
-  const demoLogin = () => {
-    setUser(INITIAL_USER);
+  const demoLogin = async (): Promise<boolean> => {
+    const u = await authApi.login(DEMO_EMAIL, DEMO_PASSWORD);
+    setUser(u);
+    return true;
   };
 
   return (
@@ -90,6 +101,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         user,
         isAuthenticated: !!user,
         isAdmin: user?.role === 'admin',
+        isInitializing,
         login,
         register,
         logout,

@@ -112,7 +112,7 @@ export const MyInterviews: React.FC = () => {
                       <DifficultyBadge difficulty={item.difficulty} size="sm" />
                     </td>
                     <td className="py-4 px-4 text-xs font-semibold text-slate-600">
-                      {item.evaluations.length} / {item.totalQuestions}
+                      {(item.answeredQuestions ?? item.evaluations.length)} / {item.totalQuestions}
                     </td>
                     <td className="py-4 px-4">
                       {item.averageScore ? (

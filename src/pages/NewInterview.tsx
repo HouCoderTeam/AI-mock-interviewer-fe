@@ -18,12 +18,13 @@ import {
 } from 'lucide-react';
 
 export const NewInterview: React.FC = () => {
-  const { startNewInterview } = useInterview();
+  const { startNewInterview, isCreating } = useInterview();
   const navigate = useNavigate();
 
   const [selectedTopic, setSelectedTopic] = useState<TopicId>('java-core');
   const [selectedDifficulty, setSelectedDifficulty] = useState<Difficulty>('medium');
   const [questionCount, setQuestionCount] = useState<number>(5);
+  const [error, setError] = useState('');
 
   const getTopicIcon = (iconName: string) => {
     switch (iconName) {
@@ -42,9 +43,14 @@ export const NewInterview: React.FC = () => {
     }
   };
 
-  const handleStart = () => {
-    startNewInterview(selectedTopic, selectedDifficulty, questionCount);
-    navigate('/interview-room');
+  const handleStart = async () => {
+    setError('');
+    try {
+      await startNewInterview(selectedTopic, selectedDifficulty, questionCount);
+      navigate('/interview-room');
+    } catch (err: any) {
+      setError(err?.message || 'Không thể tạo buổi phỏng vấn. Vui lòng thử lại.');
+    }
   };
 
   return (
@@ -184,6 +190,12 @@ export const NewInterview: React.FC = () => {
           </div>
         </CardContent>
 
+        {error && (
+          <div className="mx-6 mb-2 flex items-center gap-2 rounded-lg border border-rose-200 bg-rose-50 px-3 py-2 text-xs font-medium text-rose-700">
+            {error}
+          </div>
+        )}
+
         <CardFooter className="flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="text-xs text-slate-500">
             Đã chọn: <span className="font-bold text-slate-900 uppercase">{selectedTopic}</span> • <span className="font-bold text-slate-900 uppercase">{selectedDifficulty === 'easy' ? 'Dễ' : selectedDifficulty === 'medium' ? 'Trung bình' : 'Khó'}</span> • <span className="font-bold text-slate-900">{questionCount} câu</span>
@@ -198,10 +210,20 @@ export const NewInterview: React.FC = () => {
             </Link>
             <button
               onClick={handleStart}
-              className="inline-flex items-center gap-2 px-6 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-sm rounded-xl shadow-xs transition-colors cursor-pointer"
+              disabled={isCreating}
+              className="inline-flex items-center gap-2 px-6 py-2.5 bg-indigo-600 hover:bg-indigo-700 disabled:opacity-60 text-white font-semibold text-sm rounded-xl shadow-xs transition-colors cursor-pointer"
             >
-              <Play className="w-4 h-4 fill-current" />
-              Bắt đầu phòng phỏng vấn
+              {isCreating ? (
+                <>
+                  <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                  AI đang tạo câu hỏi...
+                </>
+              ) : (
+                <>
+                  <Play className="w-4 h-4 fill-current" />
+                  Bắt đầu phòng phỏng vấn
+                </>
+              )}
             </button>
           </div>
         </CardFooter>

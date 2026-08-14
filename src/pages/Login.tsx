@@ -37,9 +37,17 @@ export const Login: React.FC = () => {
     }
   };
 
-  const handleDemoLogin = () => {
-    demoLogin();
-    navigate('/dashboard');
+  const handleDemoLogin = async () => {
+    setError('');
+    try {
+      setIsLoading(true);
+      await demoLogin();
+      navigate('/dashboard');
+    } catch (err) {
+      setError('Đăng nhập demo thất bại. Kiểm tra backend đã chạy và tài khoản admin đã được tạo.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
