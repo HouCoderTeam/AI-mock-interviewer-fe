@@ -1,7 +1,18 @@
-import React, { useState } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { useAuth } from '../../context/AuthContext';
-import { Terminal, Plus, LogOut, Menu, X, User as UserIcon, History, LayoutDashboard, ShieldCheck, FileText } from 'lucide-react';
+import React, { useState } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
+import {
+  Terminal,
+  Plus,
+  LogOut,
+  Menu,
+  X,
+  User as UserIcon,
+  History,
+  LayoutDashboard,
+  ShieldCheck,
+  FileText,
+} from "lucide-react";
 
 export const Navbar: React.FC = () => {
   const { user, logout, isAuthenticated, isAdmin } = useAuth();
@@ -13,7 +24,7 @@ export const Navbar: React.FC = () => {
 
   const handleLogout = () => {
     logout();
-    navigate('/login');
+    navigate("/login");
   };
 
   return (
@@ -21,7 +32,10 @@ export const Navbar: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center gap-8">
-            <Link to={isAuthenticated ? "/dashboard" : "/login"} className="flex items-center gap-2.5 group">
+            <Link
+              to={isAuthenticated ? "/dashboard" : "/login"}
+              className="flex items-center gap-2.5 group"
+            >
               <div className="w-9 h-9 rounded-lg bg-indigo-600 text-white flex items-center justify-center shadow-xs group-hover:bg-indigo-700 transition-colors">
                 <Terminal className="w-5 h-5" />
               </div>
@@ -40,9 +54,9 @@ export const Navbar: React.FC = () => {
                 <Link
                   to="/dashboard"
                   className={`px-3.5 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 ${
-                    isActive('/dashboard')
-                      ? 'bg-slate-100 text-slate-900 font-semibold'
-                      : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
+                    isActive("/dashboard")
+                      ? "bg-slate-100 text-slate-900 font-semibold"
+                      : "text-slate-600 hover:text-slate-900 hover:bg-slate-50"
                   }`}
                 >
                   <LayoutDashboard className="w-4 h-4 text-slate-500" />
@@ -51,9 +65,9 @@ export const Navbar: React.FC = () => {
                 <Link
                   to="/my-interviews"
                   className={`px-3.5 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 ${
-                    isActive('/my-interviews')
-                      ? 'bg-slate-100 text-slate-900 font-semibold'
-                      : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
+                    isActive("/my-interviews")
+                      ? "bg-slate-100 text-slate-900 font-semibold"
+                      : "text-slate-600 hover:text-slate-900 hover:bg-slate-50"
                   }`}
                 >
                   <History className="w-4 h-4 text-slate-500" />
@@ -63,9 +77,9 @@ export const Navbar: React.FC = () => {
                   <Link
                     to="/admin"
                     className={`px-3.5 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 ${
-                      isActive('/admin')
-                        ? 'bg-slate-100 text-slate-900 font-semibold'
-                        : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
+                      isActive("/admin")
+                        ? "bg-slate-100 text-slate-900 font-semibold"
+                        : "text-slate-600 hover:text-slate-900 hover:bg-slate-50"
                     }`}
                   >
                     <ShieldCheck className="w-4 h-4 text-slate-500" />
@@ -87,7 +101,7 @@ export const Navbar: React.FC = () => {
               </Link>
 
               <Link
-                to="/new-interview"
+                to="/custom-interview"
                 className="inline-flex items-center gap-2 px-3.5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold rounded-lg shadow-xs transition-colors"
               >
                 <Plus className="w-4 h-4" />
@@ -99,11 +113,19 @@ export const Navbar: React.FC = () => {
               <div className="flex items-center gap-3 pl-1">
                 <div className="flex items-center gap-2.5">
                   <div className="w-8 h-8 rounded-full bg-indigo-100 text-indigo-700 font-bold text-xs flex items-center justify-center border border-indigo-200">
-                    {user?.name ? user.name.charAt(0).toUpperCase() : <UserIcon className="w-4 h-4" />}
+                    {user?.name ? (
+                      user.name.charAt(0).toUpperCase()
+                    ) : (
+                      <UserIcon className="w-4 h-4" />
+                    )}
                   </div>
                   <div className="flex flex-col">
-                    <span className="text-xs font-semibold text-slate-900 truncate max-w-[120px]">{user?.name}</span>
-                    <span className="text-[10px] text-slate-500 truncate max-w-[120px]">{user?.email}</span>
+                    <span className="text-xs font-semibold text-slate-900 truncate max-w-[120px]">
+                      {user?.name}
+                    </span>
+                    <span className="text-[10px] text-slate-500 truncate max-w-[120px]">
+                      {user?.email}
+                    </span>
                   </div>
                 </div>
 
@@ -136,7 +158,7 @@ export const Navbar: React.FC = () => {
           <div className="flex md:hidden items-center gap-2">
             {isAuthenticated && (
               <Link
-                to="/new-interview"
+                to="/custom-interview"
                 className="p-2 bg-indigo-600 text-white rounded-lg shadow-xs"
               >
                 <Plus className="w-5 h-5" />
@@ -146,7 +168,11 @@ export const Navbar: React.FC = () => {
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               className="p-2 text-slate-600 hover:text-slate-900 rounded-lg hover:bg-slate-100"
             >
-              {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+              {mobileMenuOpen ? (
+                <X className="w-6 h-6" />
+              ) : (
+                <Menu className="w-6 h-6" />
+              )}
             </button>
           </div>
         </div>
@@ -158,10 +184,12 @@ export const Navbar: React.FC = () => {
             <>
               <div className="flex items-center gap-3 p-2 bg-slate-50 rounded-lg border border-slate-200">
                 <div className="w-9 h-9 rounded-full bg-indigo-100 text-indigo-700 font-bold text-sm flex items-center justify-center">
-                  {user?.name ? user.name.charAt(0).toUpperCase() : 'U'}
+                  {user?.name ? user.name.charAt(0).toUpperCase() : "U"}
                 </div>
                 <div className="flex flex-col">
-                  <span className="text-sm font-bold text-slate-900">{user?.name}</span>
+                  <span className="text-sm font-bold text-slate-900">
+                    {user?.name}
+                  </span>
                   <span className="text-xs text-slate-500">{user?.email}</span>
                 </div>
               </div>
@@ -171,7 +199,9 @@ export const Navbar: React.FC = () => {
                   to="/dashboard"
                   onClick={() => setMobileMenuOpen(false)}
                   className={`flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-sm font-medium ${
-                    isActive('/dashboard') ? 'bg-indigo-50 text-indigo-700 font-semibold' : 'text-slate-700'
+                    isActive("/dashboard")
+                      ? "bg-indigo-50 text-indigo-700 font-semibold"
+                      : "text-slate-700"
                   }`}
                 >
                   <LayoutDashboard className="w-4 h-4" />
@@ -182,7 +212,9 @@ export const Navbar: React.FC = () => {
                   to="/my-interviews"
                   onClick={() => setMobileMenuOpen(false)}
                   className={`flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-sm font-medium ${
-                    isActive('/my-interviews') ? 'bg-indigo-50 text-indigo-700 font-semibold' : 'text-slate-700'
+                    isActive("/my-interviews")
+                      ? "bg-indigo-50 text-indigo-700 font-semibold"
+                      : "text-slate-700"
                   }`}
                 >
                   <History className="w-4 h-4" />
@@ -194,7 +226,9 @@ export const Navbar: React.FC = () => {
                     to="/admin"
                     onClick={() => setMobileMenuOpen(false)}
                     className={`flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-sm font-medium ${
-                      isActive('/admin') ? 'bg-indigo-50 text-indigo-700 font-semibold' : 'text-slate-700'
+                      isActive("/admin")
+                        ? "bg-indigo-50 text-indigo-700 font-semibold"
+                        : "text-slate-700"
                     }`}
                   >
                     <ShieldCheck className="w-4 h-4" />
@@ -212,7 +246,7 @@ export const Navbar: React.FC = () => {
                 </Link>
 
                 <Link
-                  to="/new-interview"
+                  to="/custom-interview"
                   onClick={() => setMobileMenuOpen(false)}
                   className="flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-sm font-medium bg-indigo-600 text-white"
                 >

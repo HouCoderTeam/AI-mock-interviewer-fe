@@ -37,7 +37,7 @@ export const InterviewRoom: React.FC = () => {
 
   useEffect(() => {
     if (!currentInterview) {
-      navigate("/new-interview");
+      navigate("/custom-interview");
     }
   }, [currentInterview, navigate]);
 

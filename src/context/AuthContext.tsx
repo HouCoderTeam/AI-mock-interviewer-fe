@@ -1,6 +1,6 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
-import { User } from '../types/interview';
-import { authApi, tokenStore, ApiError } from '../lib/api';
+import React, { createContext, useContext, useState, useEffect } from "react";
+import { User } from "../types/interview";
+import { authApi, tokenStore, ApiError } from "../lib/api";
 
 interface AuthContextType {
   user: User | null;
@@ -16,12 +16,27 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 // Tài khoản admin được seed sẵn ở backend (ApplicationInitConfig)
-const DEMO_EMAIL = 'admin@webluyenpv.com';
-const DEMO_PASSWORD = 'admin123';
+const DEMO_EMAIL = "admin@webluyenpv.com";
+const DEMO_PASSWORD = "admin123";
 
-const USER_CACHE_KEY = 'ai_mock_user';
+const USER_CACHE_KEY = "ai_mock_user";
 
-export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+const shouldLogoutOnAuthError = (error: unknown): boolean => {
+  if (!(error instanceof ApiError)) return false;
+
+  const isForbiddenPermission = error.status === 403 || error.code === 9000;
+  const isExpiredOrInvalid = error.status === 401 || error.status === 400;
+
+  return (
+    isExpiredOrInvalid ||
+    (isForbiddenPermission &&
+      (error.code === 9000 || /not have permission/i.test(error.message)))
+  );
+};
+
+export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
   const [user, setUser] = useState<User | null>(() => {
     // Chỉ khôi phục user từ cache nếu còn token (tránh trạng thái "đăng nhập sẵn" giả)
     if (!tokenStore.get()) return null;
@@ -36,7 +51,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return null;
   });
 
-  const [isInitializing, setIsInitializing] = useState<boolean>(!!tokenStore.get());
+  const [isInitializing, setIsInitializing] = useState<boolean>(
+    !!tokenStore.get(),
+  );
 
   useEffect(() => {
     if (user) {
@@ -59,9 +76,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         if (active) setUser(u);
       })
       .catch((e) => {
-        // Token hết hạn/không hợp lệ -> đăng xuất
-        if (e instanceof ApiError && (e.status === 401 || e.status === 400)) {
+        // Token hết hạn, không hợp lệ hoặc không có quyền -> đăng xuất và buộc quay lại login
+        if (shouldLogoutOnAuthError(e)) {
           tokenStore.clear();
+          localStorage.removeItem(USER_CACHE_KEY);
           if (active) setUser(null);
         }
       })
@@ -79,7 +97,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return true;
   };
 
-  const register = async (name: string, email: string, pass: string): Promise<boolean> => {
+  const register = async (
+    name: string,
+    email: string,
+    pass: string,
+  ): Promise<boolean> => {
     const u = await authApi.register(name.trim(), email.trim(), pass);
     setUser(u);
     return true;
@@ -100,7 +122,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       value={{
         user,
         isAuthenticated: !!user,
-        isAdmin: user?.role === 'admin',
+        isAdmin: user?.role === "admin",
         isInitializing,
         login,
         register,
@@ -116,7 +138,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (!context) {
-    throw new Error('useAuth must be used within an AuthProvider');
+    throw new Error("useAuth must be used within an AuthProvider");
   }
   return context;
 };

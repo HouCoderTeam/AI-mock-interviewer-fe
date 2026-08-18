@@ -1,21 +1,28 @@
-import React from 'react';
-import { HashRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { AuthProvider, useAuth } from './context/AuthContext';
-import { InterviewProvider } from './context/InterviewContext';
-import { Navbar } from './components/layout/Navbar';
-import { Footer } from './components/layout/Footer';
+import React from "react";
+import {
+  HashRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
+import { AuthProvider, useAuth } from "./context/AuthContext";
+import { InterviewProvider } from "./context/InterviewContext";
+import { Navbar } from "./components/layout/Navbar";
+import { Footer } from "./components/layout/Footer";
 
-import { Login } from './pages/Login';
-import { Register } from './pages/Register';
-import { Dashboard } from './pages/Dashboard';
-import { NewInterview } from './pages/NewInterview';
-import { CustomInterview } from './pages/CustomInterview';
-import { InterviewRoom } from './pages/InterviewRoom';
-import { InterviewResult } from './pages/InterviewResult';
-import { MyInterviews } from './pages/MyInterviews';
-import { AdminQuestions } from './pages/AdminQuestions';
+import { Login } from "./pages/Login";
+import { Register } from "./pages/Register";
+import { Dashboard } from "./pages/Dashboard";
+import { NewInterview } from "./pages/NewInterview";
+import { CustomInterview } from "./pages/CustomInterview";
+import { InterviewRoom } from "./pages/InterviewRoom";
+import { InterviewResult } from "./pages/InterviewResult";
+import { MyInterviews } from "./pages/MyInterviews";
+import { AdminQuestions } from "./pages/AdminQuestions";
 
-const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
   const { isAuthenticated } = useAuth();
   if (!isAuthenticated) {
     return <Navigate to="/login" replace />;
@@ -55,7 +62,12 @@ function AppContent() {
         <Routes>
           <Route
             path="/"
-            element={<Navigate to={isAuthenticated ? "/dashboard" : "/login"} replace />}
+            element={
+              <Navigate
+                to={isAuthenticated ? "/dashboard" : "/login"}
+                replace
+              />
+            }
           />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
@@ -73,7 +85,7 @@ function AppContent() {
             path="/new-interview"
             element={
               <ProtectedRoute>
-                <NewInterview />
+                <Navigate to="/custom-interview" replace />
               </ProtectedRoute>
             }
           />

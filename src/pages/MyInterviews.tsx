@@ -1,26 +1,34 @@
-import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import { useInterview } from '../context/InterviewContext';
-import { Card, CardContent } from '../components/ui/Card';
-import { DifficultyBadge, ScoreBadge, StatusBadge } from '../components/ui/Badge';
-import { History, Play, Calendar, ChevronRight, Search, Filter } from 'lucide-react';
+import React, { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
+import { useInterview } from "../context/InterviewContext";
+import { Card, CardContent } from "../components/ui/Card";
+import {
+  DifficultyBadge,
+  ScoreBadge,
+  StatusBadge,
+} from "../components/ui/Badge";
+import {
+  History,
+  Play,
+  Calendar,
+  ChevronRight,
+  Search,
+  Filter,
+} from "lucide-react";
 
 export const MyInterviews: React.FC = () => {
   const { interviews } = useInterview();
   const navigate = useNavigate();
 
-  const [searchTerm, setSearchTerm] = useState('');
-  const [selectedTopicFilter, setSelectedTopicFilter] = useState<string>('all');
+  const [searchTerm, setSearchTerm] = useState("");
 
-  const filteredInterviews = interviews.filter((item) => {
-    const matchesSearch = item.topicTitle.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesTopic = selectedTopicFilter === 'all' || item.topic === selectedTopicFilter;
-    return matchesSearch && matchesTopic;
-  });
+  const filteredInterviews = interviews.filter((item) =>
+    item.topicTitle.toLowerCase().includes(searchTerm.toLowerCase()),
+  );
 
   const handleRowClick = (id: string, status: string) => {
-    if (status === 'in-progress') {
-      navigate('/interview-room');
+    if (status === "in-progress") {
+      navigate("/interview-room");
     } else {
       navigate(`/interview-result/${id}`);
     }
@@ -40,7 +48,7 @@ export const MyInterviews: React.FC = () => {
         </div>
 
         <Link
-          to="/new-interview"
+          to="/custom-interview"
           className="inline-flex items-center gap-2 px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-xs sm:text-sm rounded-xl shadow-xs transition-colors"
         >
           <Play className="w-4 h-4 fill-current" />
@@ -58,22 +66,6 @@ export const MyInterviews: React.FC = () => {
             placeholder="Tìm theo tên chủ đề..."
             className="w-full pl-9 pr-3 py-1.5 text-xs border border-slate-200 rounded-lg outline-none focus:border-indigo-600"
           />
-        </div>
-
-        <div className="flex items-center gap-2 w-full sm:w-auto">
-          <Filter className="w-4 h-4 text-slate-400" />
-          <select
-            value={selectedTopicFilter}
-            onChange={(e) => setSelectedTopicFilter(e.target.value)}
-            className="text-xs border border-slate-200 rounded-lg px-3 py-1.5 outline-none focus:border-indigo-600 bg-white text-slate-700"
-          >
-            <option value="all">Tất cả chủ đề</option>
-            <option value="java-core">Java Core</option>
-            <option value="oop">Khái niệm OOP</option>
-            <option value="spring-boot">Spring Boot</option>
-            <option value="database">Cơ sở dữ liệu & SQL</option>
-            <option value="rest-api">Thiết kế REST API</option>
-          </select>
         </div>
       </div>
 
@@ -112,22 +104,25 @@ export const MyInterviews: React.FC = () => {
                       <DifficultyBadge difficulty={item.difficulty} size="sm" />
                     </td>
                     <td className="py-4 px-4 text-xs font-semibold text-slate-600">
-                      {(item.answeredQuestions ?? item.evaluations.length)} / {item.totalQuestions}
+                      {item.answeredQuestions ?? item.evaluations.length} /{" "}
+                      {item.totalQuestions}
                     </td>
                     <td className="py-4 px-4">
                       {item.averageScore ? (
                         <ScoreBadge score={item.averageScore} size="sm" />
                       ) : (
-                        <span className="text-xs text-slate-400 italic">Đang diễn ra</span>
+                        <span className="text-xs text-slate-400 italic">
+                          Đang diễn ra
+                        </span>
                       )}
                     </td>
                     <td className="py-4 px-4 text-xs text-slate-500">
                       <div className="flex items-center gap-1">
                         <Calendar className="w-3.5 h-3.5 text-slate-400" />
-                        {new Date(item.createdAt).toLocaleDateString('vi-VN', {
-                          month: 'short',
-                          day: 'numeric',
-                          year: 'numeric',
+                        {new Date(item.createdAt).toLocaleDateString("vi-VN", {
+                          month: "short",
+                          day: "numeric",
+                          year: "numeric",
                         })}
                       </div>
                     </td>
@@ -135,8 +130,17 @@ export const MyInterviews: React.FC = () => {
                       <StatusBadge status={item.status} />
                     </td>
                     <td className="py-4 px-4 text-right">
-                      <button className="text-xs font-semibold text-indigo-600 group-hover:text-indigo-800 inline-flex items-center gap-1">
-                        {item.status === 'in-progress' ? 'Tiếp tục' : 'Xem báo cáo'}
+                      <button
+                        type="button"
+                        onClick={(event) => {
+                          event.stopPropagation();
+                          handleRowClick(item.id, item.status);
+                        }}
+                        className="text-xs font-semibold text-indigo-600 group-hover:text-indigo-800 inline-flex items-center gap-1"
+                      >
+                        {item.status === "in-progress"
+                          ? "Tiếp tục"
+                          : "Xem báo cáo"}
                         <ChevronRight className="w-4 h-4 text-slate-400 group-hover:text-indigo-600" />
                       </button>
                     </td>

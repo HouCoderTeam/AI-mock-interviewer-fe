@@ -1,9 +1,13 @@
-import React from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
-import { useInterview } from '../context/InterviewContext';
-import { Card, CardContent } from '../components/ui/Card';
-import { DifficultyBadge, ScoreBadge, StatusBadge } from '../components/ui/Badge';
+import React from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
+import { useInterview } from "../context/InterviewContext";
+import { Card, CardContent } from "../components/ui/Card";
+import {
+  DifficultyBadge,
+  ScoreBadge,
+  StatusBadge,
+} from "../components/ui/Badge";
 import {
   Play,
   CheckCircle2,
@@ -14,8 +18,8 @@ import {
   Calendar,
   Sparkles,
   ChevronRight,
-  BookOpen
-} from 'lucide-react';
+  BookOpen,
+} from "lucide-react";
 
 export const Dashboard: React.FC = () => {
   const { user } = useAuth();
@@ -23,16 +27,16 @@ export const Dashboard: React.FC = () => {
   const navigate = useNavigate();
 
   const handleStartInterview = () => {
-    navigate('/new-interview');
+    navigate("/custom-interview");
   };
 
   const handleStartCustomInterview = () => {
-    navigate('/custom-interview');
+    navigate("/custom-interview");
   };
 
   const handleViewInterview = (interviewId: string, status: string) => {
-    if (status === 'in-progress') {
-      navigate('/interview-room');
+    if (status === "in-progress") {
+      navigate("/interview-room");
     } else {
       navigate(`/interview-result/${interviewId}`);
     }
@@ -47,10 +51,11 @@ export const Dashboard: React.FC = () => {
             Nền tảng phỏng vấn kỹ thuật AI
           </div>
           <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">
-            Sẵn sàng cho buổi phỏng vấn tiếp theo, {user?.name || 'Ứng viên'}?
+            Sẵn sàng cho buổi phỏng vấn tiếp theo, {user?.name || "Ứng viên"}?
           </h1>
           <p className="text-sm sm:text-base text-slate-300 font-normal leading-relaxed">
-            Luyện phỏng vấn kỹ thuật với người phỏng vấn AI phù hợp cho các chủ đề Java Core, OOP, Spring Boot, Cơ sở dữ liệu và REST API.
+            Luyện phỏng vấn kỹ thuật với người phỏng vấn AI phù hợp cho các chủ
+            đề Java Core, OOP, Spring Boot, Cơ sở dữ liệu và REST API.
           </p>
           <div className="pt-2 flex flex-wrap items-center gap-3">
             <button
@@ -65,12 +70,16 @@ export const Dashboard: React.FC = () => {
               className="inline-flex items-center gap-2 px-4 py-2.5 bg-slate-800/80 hover:bg-slate-800 text-slate-200 border border-slate-700 font-medium text-sm rounded-xl transition-colors"
             >
               <BookOpen className="w-4 h-4 text-slate-400" />
-              Phỏng vấn mẫu
+              Bắt đầu phỏng vấn
             </button>
           </div>
         </div>
         <div className="absolute right-0 bottom-0 top-0 opacity-10 pointer-events-none hidden lg:block pr-8">
-          <svg className="h-full w-auto text-indigo-400" fill="currentColor" viewBox="0 0 100 100">
+          <svg
+            className="h-full w-auto text-indigo-400"
+            fill="currentColor"
+            viewBox="0 0 100 100"
+          >
             <polygon points="0,0 100,0 50,100" />
           </svg>
         </div>
@@ -90,7 +99,9 @@ export const Dashboard: React.FC = () => {
                 <h3 className="text-2xl font-bold text-slate-900 mt-1">
                   {userStats.completedInterviews}
                 </h3>
-                <p className="text-[11px] text-slate-500 mt-1">Số buổi phỏng vấn đã hoàn tất</p>
+                <p className="text-[11px] text-slate-500 mt-1">
+                  Số buổi phỏng vấn đã hoàn tất
+                </p>
               </div>
               <div className="w-12 h-12 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center">
                 <CheckCircle2 className="w-6 h-6" />
@@ -105,9 +116,13 @@ export const Dashboard: React.FC = () => {
                   Điểm trung bình
                 </p>
                 <h3 className="text-2xl font-bold text-slate-900 mt-1">
-                  {userStats.averageScore > 0 ? `${userStats.averageScore} / 10` : 'N/A'}
+                  {userStats.averageScore > 0
+                    ? `${userStats.averageScore} / 10`
+                    : "N/A"}
                 </h3>
-                <p className="text-[11px] text-slate-500 mt-1">Điểm đánh giá tổng thể</p>
+                <p className="text-[11px] text-slate-500 mt-1">
+                  Điểm đánh giá tổng thể
+                </p>
               </div>
               <div className="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
                 <BarChart2 className="w-6 h-6" />
@@ -122,9 +137,13 @@ export const Dashboard: React.FC = () => {
                   Điểm cao nhất
                 </p>
                 <h3 className="text-2xl font-bold text-slate-900 mt-1">
-                  {userStats.bestScore > 0 ? `${userStats.bestScore} / 10` : 'N/A'}
+                  {userStats.bestScore > 0
+                    ? `${userStats.bestScore} / 10`
+                    : "N/A"}
                 </h3>
-                <p className="text-[11px] text-slate-500 mt-1">Mốc điểm cá nhân tốt nhất</p>
+                <p className="text-[11px] text-slate-500 mt-1">
+                  Mốc điểm cá nhân tốt nhất
+                </p>
               </div>
               <div className="w-12 h-12 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center">
                 <Trophy className="w-6 h-6" />
@@ -141,7 +160,9 @@ export const Dashboard: React.FC = () => {
                 <h3 className="text-2xl font-bold text-slate-900 mt-1">
                   {userStats.questionsAnswered}
                 </h3>
-                <p className="text-[11px] text-slate-500 mt-1">Tổng số câu hỏi đã thử</p>
+                <p className="text-[11px] text-slate-500 mt-1">
+                  Tổng số câu hỏi đã thử
+                </p>
               </div>
               <div className="w-12 h-12 rounded-xl bg-slate-100 text-slate-700 flex items-center justify-center">
                 <HelpCircle className="w-6 h-6" />
@@ -154,8 +175,12 @@ export const Dashboard: React.FC = () => {
       <div className="space-y-4">
         <div className="flex items-center justify-between">
           <div>
-            <h2 className="text-lg font-bold text-slate-900">Phỏng vấn gần đây</h2>
-            <p className="text-xs text-slate-500">Theo dõi các buổi luyện tập trước đây và lịch sử phản hồi</p>
+            <h2 className="text-lg font-bold text-slate-900">
+              Phỏng vấn gần đây
+            </h2>
+            <p className="text-xs text-slate-500">
+              Theo dõi các buổi luyện tập trước đây và lịch sử phản hồi
+            </p>
           </div>
           <Link
             to="/my-interviews"
@@ -172,9 +197,11 @@ export const Dashboard: React.FC = () => {
               <div className="w-12 h-12 rounded-full bg-slate-100 text-slate-400 mx-auto flex items-center justify-center">
                 <BookOpen className="w-6 h-6" />
               </div>
-              <h3 className="text-sm font-semibold text-slate-800">Chưa có phỏng vấn nào hoàn thành</h3>
+              <h3 className="text-sm font-semibold text-slate-800">
+                Chưa có phỏng vấn nào hoàn thành
+              </h3>
               <p className="text-xs text-slate-500 max-w-sm mx-auto">
-                Chọn một chủ đề như Java Core hoặc Spring Boot và bắt đầu buổi phỏng vấn AI đầu tiên của bạn.
+                Tải lên CV và JD để bắt đầu buổi phỏng vấn AI đầu tiên của bạn.
               </p>
               <button
                 onClick={handleStartInterview}
@@ -203,7 +230,9 @@ export const Dashboard: React.FC = () => {
                   {interviews.slice(0, 5).map((interview) => (
                     <tr
                       key={interview.id}
-                      onClick={() => handleViewInterview(interview.id, interview.status)}
+                      onClick={() =>
+                        handleViewInterview(interview.id, interview.status)
+                      }
                       className="hover:bg-slate-50/80 transition-colors cursor-pointer group"
                     >
                       <td className="py-4 px-4 sm:px-6 font-semibold text-slate-900">
@@ -213,31 +242,51 @@ export const Dashboard: React.FC = () => {
                         </div>
                       </td>
                       <td className="py-4 px-4">
-                        <DifficultyBadge difficulty={interview.difficulty} size="sm" />
+                        <DifficultyBadge
+                          difficulty={interview.difficulty}
+                          size="sm"
+                        />
                       </td>
                       <td className="py-4 px-4">
                         {interview.averageScore ? (
-                          <ScoreBadge score={interview.averageScore} size="sm" />
+                          <ScoreBadge
+                            score={interview.averageScore}
+                            size="sm"
+                          />
                         ) : (
-                          <span className="text-xs text-slate-400 italic">Đang diễn ra</span>
+                          <span className="text-xs text-slate-400 italic">
+                            Đang diễn ra
+                          </span>
                         )}
                       </td>
                       <td className="py-4 px-4 text-xs text-slate-500">
                         <div className="flex items-center gap-1.5">
                           <Calendar className="w-3.5 h-3.5 text-slate-400" />
-                          {new Date(interview.createdAt).toLocaleDateString('vi-VN', {
-                            month: 'short',
-                            day: 'numeric',
-                            year: 'numeric',
-                          })}
+                          {new Date(interview.createdAt).toLocaleDateString(
+                            "vi-VN",
+                            {
+                              month: "short",
+                              day: "numeric",
+                              year: "numeric",
+                            },
+                          )}
                         </div>
                       </td>
                       <td className="py-4 px-4">
                         <StatusBadge status={interview.status} />
                       </td>
                       <td className="py-4 px-4 text-right">
-                        <button className="text-xs font-semibold text-indigo-600 group-hover:text-indigo-800 inline-flex items-center gap-1">
-                          {interview.status === 'in-progress' ? 'Tiếp tục' : 'Xem kết quả'}
+                        <button
+                          type="button"
+                          onClick={(event) => {
+                            event.stopPropagation();
+                            handleViewInterview(interview.id, interview.status);
+                          }}
+                          className="text-xs font-semibold text-indigo-600 group-hover:text-indigo-800 inline-flex items-center gap-1"
+                        >
+                          {interview.status === "in-progress"
+                            ? "Tiếp tục"
+                            : "Xem kết quả"}
                           <ChevronRight className="w-4 h-4 text-slate-400 group-hover:text-indigo-600" />
                         </button>
                       </td>

@@ -1,22 +1,27 @@
-import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate, Link } from 'react-router-dom';
-import { useInterview } from '../context/InterviewContext';
-import { Interview } from '../types/interview';
-import { Card, CardContent, CardHeader } from '../components/ui/Card';
-import { DifficultyBadge, ScoreBadge } from '../components/ui/Badge';
-import { EvaluationCard } from '../components/interview/EvaluationCard';
+import React, { useState, useEffect } from "react";
+import { useParams, useNavigate, Link } from "react-router-dom";
+import { useInterview } from "../context/InterviewContext";
+import { Interview } from "../types/interview";
+import { Card, CardContent, CardHeader } from "../components/ui/Card";
+import { DifficultyBadge, ScoreBadge } from "../components/ui/Badge";
+import { EvaluationCard } from "../components/interview/EvaluationCard";
 import {
   RotateCcw,
   LayoutDashboard,
   CheckCircle2,
   Sparkles,
   FileText,
-  Loader2
-} from 'lucide-react';
+  Loader2,
+} from "lucide-react";
 
 export const InterviewResult: React.FC = () => {
   const { id } = useParams<{ id: string }>();
-  const { currentInterview, getInterviewById, loadInterview, startNewInterview } = useInterview();
+  const {
+    currentInterview,
+    getInterviewById,
+    loadInterview,
+    startNewInterview,
+  } = useInterview();
   const navigate = useNavigate();
 
   const [interview, setInterview] = useState<Interview | null>(() =>
@@ -62,8 +67,12 @@ export const InterviewResult: React.FC = () => {
   if (!interview) {
     return (
       <div className="max-w-2xl mx-auto px-4 py-16 text-center space-y-4">
-        <h2 className="text-xl font-bold text-slate-800">Không tìm thấy kết quả phỏng vấn</h2>
-        <p className="text-sm text-slate-600">Không thể truy xuất lịch sử buổi phỏng vấn đã yêu cầu.</p>
+        <h2 className="text-xl font-bold text-slate-800">
+          Không tìm thấy kết quả phỏng vấn
+        </h2>
+        <p className="text-sm text-slate-600">
+          Không thể truy xuất lịch sử buổi phỏng vấn đã yêu cầu.
+        </p>
         <Link
           to="/dashboard"
           className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white font-semibold text-xs rounded-lg shadow-xs"
@@ -78,17 +87,8 @@ export const InterviewResult: React.FC = () => {
   const averageScore = interview.averageScore || 0;
 
   const handleTryAgain = async () => {
-    // Với phỏng vấn CV/JD, nội dung CV/JD không được lưu lại -> đưa người dùng nhập lại
-    if (interview.customMeta) {
-      navigate('/custom-interview');
-      return;
-    }
-    try {
-      await startNewInterview(interview.topic, interview.difficulty, interview.totalQuestions);
-      navigate('/interview-room');
-    } catch {
-      navigate('/new-interview');
-    }
+    // Tất cả các buổi phỏng vấn hiện chỉ còn ở flow theo CV + JD.
+    navigate("/custom-interview");
   };
 
   return (
@@ -106,11 +106,13 @@ export const InterviewResult: React.FC = () => {
               {interview.topicTitle} Mock Interview
             </h1>
             <p className="text-xs text-slate-500 mt-1">
-              Hoàn thành vào{' '}
-              {new Date(interview.completedAt || interview.createdAt).toLocaleDateString('vi-VN', {
-                month: 'long',
-                day: 'numeric',
-                year: 'numeric',
+              Hoàn thành vào{" "}
+              {new Date(
+                interview.completedAt || interview.createdAt,
+              ).toLocaleDateString("vi-VN", {
+                month: "long",
+                day: "numeric",
+                year: "numeric",
               })}
             </p>
           </div>
@@ -125,15 +127,27 @@ export const InterviewResult: React.FC = () => {
 
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 text-center">
           <div className="bg-slate-50/70 border border-slate-200/60 p-3.5 rounded-xl">
-            <div className="text-xs font-semibold text-slate-500">Tổng số câu hỏi</div>
-            <div className="text-lg font-bold text-slate-900 mt-0.5">{interview.evaluations.length} / {interview.totalQuestions}</div>
+            <div className="text-xs font-semibold text-slate-500">
+              Tổng số câu hỏi
+            </div>
+            <div className="text-lg font-bold text-slate-900 mt-0.5">
+              {interview.evaluations.length} / {interview.totalQuestions}
+            </div>
           </div>
           <div className="bg-slate-50/70 border border-slate-200/60 p-3.5 rounded-xl">
             <div className="text-xs font-semibold text-slate-500">Độ khó</div>
-            <div className="text-lg font-bold text-slate-900 capitalize mt-0.5">{interview.difficulty === 'easy' ? 'Dễ' : interview.difficulty === 'medium' ? 'Trung bình' : 'Khó'}</div>
+            <div className="text-lg font-bold text-slate-900 capitalize mt-0.5">
+              {interview.difficulty === "easy"
+                ? "Dễ"
+                : interview.difficulty === "medium"
+                  ? "Trung bình"
+                  : "Khó"}
+            </div>
           </div>
           <div className="col-span-2 sm:col-span-1 bg-slate-50/70 border border-slate-200/60 p-3.5 rounded-xl">
-            <div className="text-xs font-semibold text-slate-500">Trạng thái</div>
+            <div className="text-xs font-semibold text-slate-500">
+              Trạng thái
+            </div>
             <div className="text-lg font-bold text-emerald-600 flex items-center justify-center gap-1 mt-0.5">
               <CheckCircle2 className="w-4 h-4" />
               Hoàn thành
@@ -164,22 +178,34 @@ export const InterviewResult: React.FC = () => {
           <CardHeader className="bg-white/80">
             <div className="flex items-center gap-2">
               <Sparkles className="w-5 h-5 text-indigo-600" />
-              <h2 className="text-base font-bold text-slate-900">Thông tin CV/JD và độ phù hợp</h2>
+              <h2 className="text-base font-bold text-slate-900">
+                Thông tin CV/JD và độ phù hợp
+              </h2>
             </div>
           </CardHeader>
           <CardContent className="p-6 space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="bg-white border border-slate-200 rounded-xl p-4">
-                <p className="text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-1">Vị trí</p>
-                <p className="text-sm font-semibold text-slate-900">{interview.customMeta.jobTitle}</p>
+                <p className="text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-1">
+                  Vị trí
+                </p>
+                <p className="text-sm font-semibold text-slate-900">
+                  {interview.customMeta.jobTitle}
+                </p>
               </div>
               <div className="bg-white border border-slate-200 rounded-xl p-4">
-                <p className="text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-1">Số câu hỏi</p>
-                <p className="text-sm font-semibold text-slate-900">{interview.totalQuestions} câu</p>
+                <p className="text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-1">
+                  Số câu hỏi
+                </p>
+                <p className="text-sm font-semibold text-slate-900">
+                  {interview.totalQuestions} câu
+                </p>
               </div>
             </div>
             <div className="bg-white border border-slate-200 rounded-xl p-4">
-              <p className="text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-2">Độ phù hợp CV/JD</p>
+              <p className="text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-2">
+                Độ phù hợp CV/JD
+              </p>
               <p className="text-sm text-slate-700 leading-relaxed">
                 {interview.overallFeedback ||
                   `Bạn đã hoàn thành buổi phỏng vấn theo CV/JD cho vị trí ${interview.customMeta.jobTitle}. Điểm trung bình của bạn là ${averageScore}/10. Kết quả cho thấy bạn đã nêu rõ điểm mạnh và sự phù hợp với yêu cầu công việc. Hãy củng cố thêm các kỹ năng còn thiếu theo JD để tăng khả năng vượt qua vòng phỏng vấn.`}
@@ -194,7 +220,9 @@ export const InterviewResult: React.FC = () => {
           <CardHeader className="bg-white/80">
             <div className="flex items-center gap-2">
               <Sparkles className="w-5 h-5 text-indigo-600" />
-              <h2 className="text-base font-bold text-slate-900">Đánh giá tổng thể và khuyến nghị</h2>
+              <h2 className="text-base font-bold text-slate-900">
+                Đánh giá tổng thể và khuyến nghị
+              </h2>
             </div>
           </CardHeader>
           <CardContent className="p-6">
@@ -209,17 +237,24 @@ export const InterviewResult: React.FC = () => {
       <div className="space-y-6">
         <div className="flex items-center gap-2 pb-2 border-b border-slate-200">
           <FileText className="w-5 h-5 text-indigo-600" />
-          <h2 className="text-lg font-bold text-slate-900">Phân tích từng câu hỏi</h2>
+          <h2 className="text-lg font-bold text-slate-900">
+            Phân tích từng câu hỏi
+          </h2>
         </div>
 
         {interview.evaluations.map((evalItem, index) => (
-          <div key={index} className="bg-white border border-slate-200 rounded-2xl p-6 shadow-xs space-y-4">
+          <div
+            key={index}
+            className="bg-white border border-slate-200 rounded-2xl p-6 shadow-xs space-y-4"
+          >
             <div className="flex items-start justify-between gap-3">
               <div className="space-y-1">
                 <span className="text-xs font-bold uppercase tracking-wider text-slate-400">
                   Câu hỏi #{index + 1}
                 </span>
-                <h3 className="text-base font-bold text-slate-900">{evalItem.questionText}</h3>
+                <h3 className="text-base font-bold text-slate-900">
+                  {evalItem.questionText}
+                </h3>
               </div>
               <ScoreBadge score={evalItem.score} size="md" />
             </div>
