@@ -48,6 +48,16 @@ interface RequestOptions {
   _retry?: boolean;
 }
 
+interface ApiEnvelope<T> {
+  code?: number;
+  message?: string;
+  result: T;
+  pagination?: AdminPaginationMeta;
+  _block?: unknown[];
+  cursor_pagination?: unknown;
+  key?: unknown;
+}
+
 async function tryRefresh(): Promise<boolean> {
   const refresh = tokenStore.getRefresh();
   if (!refresh) return false;
@@ -73,7 +83,7 @@ async function tryRefresh(): Promise<boolean> {
   }
 }
 
-async function request<T = any>(path: string, options: RequestOptions = {}): Promise<T> {
+async function requestWithEnvelope<T = any>(path: string, options: RequestOptions = {}): Promise<ApiEnvelope<T>> {
   const { method = 'GET', body, auth = true, _retry = false } = options;
   const token = tokenStore.get();
 
@@ -91,10 +101,9 @@ async function request<T = any>(path: string, options: RequestOptions = {}): Pro
     throw new ApiError('Không thể kết nối tới máy chủ. Vui lòng kiểm tra backend đã chạy chưa.', 0);
   }
 
-  // Tự động refresh token khi hết hạn (401)
   if (res.status === 401 && auth && !_retry && tokenStore.getRefresh()) {
     const ok = await tryRefresh();
-    if (ok) return request<T>(path, { ...options, _retry: true });
+    if (ok) return requestWithEnvelope<T>(path, { ...options, _retry: true });
   }
 
   let data: any = null;
@@ -109,6 +118,11 @@ async function request<T = any>(path: string, options: RequestOptions = {}): Pro
     throw new ApiError(message, res.status, data?.code);
   }
 
+  return data as ApiEnvelope<T>;
+}
+
+async function request<T = any>(path: string, options: RequestOptions = {}): Promise<T> {
+  const data = await requestWithEnvelope<T>(path, options);
   return data?.result as T;
 }
 
@@ -171,6 +185,63 @@ interface BackendStats {
   averageScore: number;
   bestScore: number;
   questionsAnswered: number;
+}
+
+export interface AdminPaginationMeta {
+  total: number;
+  per_page: number;
+  current_page: number;
+  last_page: number;
+  from: number;
+  to: number;
+}
+
+export interface PaginatedResponse<T> {
+  result: T[];
+  pagination: AdminPaginationMeta;
+}
+
+export interface AdminUserRecord {
+  id: string;
+  mailAccount: string;
+  fullName: string;
+  contactEmail: string;
+  contactPhone?: string;
+  avatarUrl?: string;
+  role: string;
+  accountVerified: boolean;
+  identityVerified: boolean;
+  createdAt?: string;
+}
+
+export interface AdminQuestionAnswerRecord {
+  questionId: number;
+  questionNumber: number;
+  questionText: string;
+  difficulty?: string;
+  answerText?: string;
+  score?: number;
+  feedback?: string;
+  strengths?: string;
+  weaknesses?: string;
+  modelAnswer?: string;
+  evaluatedAt?: string;
+}
+
+export interface AdminInterviewRecord {
+  sessionId: number;
+  userId: string;
+  userName: string;
+  userEmail: string;
+  position: string;
+  jobTitle?: string;
+  status?: string;
+  totalQuestions: number;
+  answeredQuestions?: number;
+  totalScore?: number;
+  createdAt?: string;
+  completedAt?: string;
+  questions: AdminQuestionAnswerRecord[];
 }
 
 // ==================== MAPPERS ====================
@@ -351,6 +422,38 @@ export const interviewApi = {
       averageScore: Number(st.averageScore) || 0,
       bestScore: Number(st.bestScore) || 0,
       questionsAnswered: st.questionsAnswered || 0,
+    };
+  },
+};
+
+export const adminApi = {
+  async listUsers(page = 0, size = 10): Promise<{ data: AdminUserRecord[]; pagination: AdminPaginationMeta }> {
+    const response = await requestWithEnvelope<AdminUserRecord[]>(`/admin/users?page=${page}&size=${size}`);
+    return {
+      data: response.result || [],
+      pagination: response.pagination || {
+        total: 0,
+        per_page: size,
+        current_page: page + 1,
+        last_page: 1,
+        from: 0,
+        to: 0,
+      },
+    };
+  },
+
+  async listInterviewRecords(page = 0, size = 10): Promise<{ data: AdminInterviewRecord[]; pagination: AdminPaginationMeta }> {
+    const response = await requestWithEnvelope<AdminInterviewRecord[]>(`/admin/interviews?page=${page}&size=${size}`);
+    return {
+      data: response.result || [],
+      pagination: response.pagination || {
+        total: 0,
+        per_page: size,
+        current_page: page + 1,
+        last_page: 1,
+        from: 0,
+        to: 0,
+      },
     };
   },
 };

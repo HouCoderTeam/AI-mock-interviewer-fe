@@ -43,9 +43,9 @@ export const Navbar: React.FC = () => {
                 <span className="font-bold text-slate-900 tracking-tight text-base sm:text-lg leading-tight">
                   AI Mock Interviewer
                 </span>
-                <span className="text-[10px] font-semibold text-indigo-600 tracking-wider uppercase">
+                {/* <span className="text-[10px] font-semibold text-indigo-600 tracking-wider uppercase">
                   Backend Developer MVP
-                </span>
+                </span> */}
               </div>
             </Link>
 
