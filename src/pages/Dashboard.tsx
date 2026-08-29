@@ -23,7 +23,7 @@ import {
 
 export const Dashboard: React.FC = () => {
   const { user } = useAuth();
-  const { interviews, userStats } = useInterview();
+  const { interviews, userStats, resumeInterview } = useInterview();
   const navigate = useNavigate();
 
   const handleStartInterview = () => {
@@ -34,9 +34,18 @@ export const Dashboard: React.FC = () => {
     navigate("/custom-interview");
   };
 
-  const handleViewInterview = (interviewId: string, status: string) => {
+  const handleViewInterview = async (
+    interviewId: string,
+    status: string,
+  ) => {
     if (status === "in-progress") {
-      navigate("/interview-room");
+      // Tải chi tiết bài đang dở thành phiên hiện tại rồi mới vào phòng
+      try {
+        await resumeInterview(interviewId);
+        navigate("/interview-room");
+      } catch {
+        window.alert("Không thể tải bài phỏng vấn. Vui lòng thử lại.");
+      }
     } else {
       navigate(`/interview-result/${interviewId}`);
     }

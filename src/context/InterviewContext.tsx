@@ -22,6 +22,7 @@ interface InterviewContextType {
   finishCurrentInterview: () => Promise<void>;
   getInterviewById: (id: string) => Interview | undefined;
   loadInterview: (id: string) => Promise<Interview>;
+  resumeInterview: (id: string) => Promise<Interview>;
   refresh: () => Promise<void>;
 }
 
@@ -221,6 +222,14 @@ export const InterviewProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     return detail;
   };
 
+  // Tải lại bài phỏng vấn đang dở và đặt thành phiên hiện tại để vào phòng tiếp tục
+  const resumeInterview = async (id: string): Promise<Interview> => {
+    const detail = await interviewApi.detail(id, user?.id);
+    setCurrentInterview(detail);
+    setInterviews((prev) => prev.map((i) => (i.id === detail.id ? detail : i)));
+    return detail;
+  };
+
   return (
     <InterviewContext.Provider
       value={{
@@ -236,6 +245,7 @@ export const InterviewProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         finishCurrentInterview,
         getInterviewById,
         loadInterview,
+        resumeInterview,
         refresh,
       }}
     >
