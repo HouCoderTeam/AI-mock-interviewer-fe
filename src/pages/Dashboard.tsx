@@ -74,13 +74,13 @@ export const Dashboard: React.FC = () => {
               <Play className="w-4 h-4 fill-current" />
               Phỏng vấn CV + JD
             </button>
-            <button
+            {/* <button
               onClick={handleStartInterview}
               className="inline-flex items-center gap-2 px-4 py-2.5 bg-slate-800/80 hover:bg-slate-800 text-slate-200 border border-slate-700 font-medium text-sm rounded-xl transition-colors"
             >
               <BookOpen className="w-4 h-4 text-slate-400" />
               Bắt đầu phỏng vấn
-            </button>
+            </button> */}
           </div>
         </div>
         <div className="absolute right-0 bottom-0 top-0 opacity-10 pointer-events-none hidden lg:block pr-8">
