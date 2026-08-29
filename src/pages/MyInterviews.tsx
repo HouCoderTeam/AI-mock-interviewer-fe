@@ -14,21 +14,32 @@ import {
   ChevronRight,
   Search,
   Filter,
+  Loader2,
 } from "lucide-react";
 
 export const MyInterviews: React.FC = () => {
-  const { interviews } = useInterview();
+  const { interviews, resumeInterview } = useInterview();
   const navigate = useNavigate();
 
   const [searchTerm, setSearchTerm] = useState("");
+  const [resumingId, setResumingId] = useState<string | null>(null);
 
   const filteredInterviews = interviews.filter((item) =>
     item.topicTitle.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
-  const handleRowClick = (id: string, status: string) => {
+  const handleRowClick = async (id: string, status: string) => {
     if (status === "in-progress") {
-      navigate("/interview-room");
+      // Tải chi tiết bài đang dở thành phiên hiện tại rồi mới vào phòng
+      setResumingId(id);
+      try {
+        await resumeInterview(id);
+        navigate("/interview-room");
+      } catch {
+        window.alert("Không thể tải bài phỏng vấn. Vui lòng thử lại.");
+      } finally {
+        setResumingId(null);
+      }
     } else {
       navigate(`/interview-result/${id}`);
     }
@@ -138,9 +149,16 @@ export const MyInterviews: React.FC = () => {
                         }}
                         className="text-xs font-semibold text-indigo-600 group-hover:text-indigo-800 inline-flex items-center gap-1"
                       >
-                        {item.status === "in-progress"
-                          ? "Tiếp tục"
-                          : "Xem báo cáo"}
+                        {resumingId === item.id ? (
+                          <>
+                            <Loader2 className="w-4 h-4 animate-spin" />
+                            Đang mở...
+                          </>
+                        ) : item.status === "in-progress" ? (
+                          "Tiếp tục"
+                        ) : (
+                          "Xem báo cáo"
+                        )}
                         <ChevronRight className="w-4 h-4 text-slate-400 group-hover:text-indigo-600" />
                       </button>
                     </td>
