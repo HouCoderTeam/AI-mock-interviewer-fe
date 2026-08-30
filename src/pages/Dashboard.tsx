@@ -34,10 +34,7 @@ export const Dashboard: React.FC = () => {
     navigate("/custom-interview");
   };
 
-  const handleViewInterview = async (
-    interviewId: string,
-    status: string,
-  ) => {
+  const handleViewInterview = async (interviewId: string, status: string) => {
     if (status === "in-progress") {
       // Tải chi tiết bài đang dở thành phiên hiện tại rồi mới vào phòng
       try {
@@ -63,8 +60,8 @@ export const Dashboard: React.FC = () => {
             Sẵn sàng cho buổi phỏng vấn tiếp theo, {user?.name || "Ứng viên"}?
           </h1>
           <p className="text-sm sm:text-base text-slate-300 font-normal leading-relaxed">
-            Luyện phỏng vấn kỹ thuật với người phỏng vấn AI phù hợp cho các chủ
-            đề Java Core, OOP, Spring Boot, Cơ sở dữ liệu và REST API.
+            Luyện phỏng vấn kỹ thuật với người phỏng vấn AI cho nhiều vai trò,
+            từ Backend, Frontend, Fullstack, Data đến QA và DevOps.
           </p>
           <div className="pt-2 flex flex-wrap items-center gap-3">
             <button

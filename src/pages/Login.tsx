@@ -129,20 +129,6 @@ export const Login: React.FC = () => {
             </button>
           </form>
 
-          <div className="mt-4 rounded-lg border border-indigo-100 bg-indigo-50/70 px-3 py-2 text-[11px] text-slate-600">
-            <span className="font-semibold text-indigo-700">Tài khoản admin:</span> admin@webluyenpv.com / admin123
-          </div>
-
-          <div className="mt-6 pt-5 border-t border-slate-100 text-center">
-            <button
-              onClick={handleDemoLogin}
-              type="button"
-              className="w-full flex items-center justify-center gap-2 px-4 py-2 border border-slate-200 bg-slate-50 hover:bg-slate-100 text-slate-700 text-xs font-semibold rounded-lg transition-colors"
-            >
-              <Sparkles className="w-3.5 h-3.5 text-indigo-600" />
-              Đăng nhập nhanh bằng demo (Không cần thông tin xác thực)
-            </button>
-          </div>
 
           <p className="mt-6 text-center text-xs text-slate-600">
             Chưa có tài khoản?{' '}
