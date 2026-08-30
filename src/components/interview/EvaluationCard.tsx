@@ -1,7 +1,7 @@
-import React from 'react';
-import { QuestionEvaluation } from '../../types/interview';
-import { ScoreBadge } from '../ui/Badge';
-import { CheckCircle2, AlertTriangle, Lightbulb, Sparkles } from 'lucide-react';
+import React from "react";
+import { QuestionEvaluation } from "../../types/interview";
+import { ScoreBadge } from "../ui/Badge";
+import { CheckCircle2, AlertTriangle, Lightbulb, Sparkles } from "lucide-react";
 
 interface EvaluationCardProps {
   evaluation: QuestionEvaluation;
@@ -24,7 +24,9 @@ export const EvaluationCard: React.FC<EvaluationCardProps> = ({
               Đánh giá AI
             </span>
             {questionNumber && (
-              <span className="text-xs font-semibold text-slate-500">Câu #{questionNumber}</span>
+              <span className="text-xs font-semibold text-slate-500">
+                Câu #{questionNumber}
+              </span>
             )}
           </div>
 
@@ -36,7 +38,9 @@ export const EvaluationCard: React.FC<EvaluationCardProps> = ({
         </div>
 
         <div className="flex items-center gap-2">
-          <span className="text-xs text-slate-500 font-medium hidden sm:inline">Điểm:</span>
+          <span className="text-xs text-slate-500 font-medium hidden sm:inline">
+            Điểm:
+          </span>
           <ScoreBadge score={evaluation.score} size="md" />
         </div>
       </div>
@@ -54,7 +58,10 @@ export const EvaluationCard: React.FC<EvaluationCardProps> = ({
             </h5>
             <ul className="space-y-1.5 pl-1">
               {evaluation.goodPoints.map((pt, idx) => (
-                <li key={idx} className="text-xs text-emerald-900 flex items-start gap-2">
+                <li
+                  key={idx}
+                  className="text-xs text-emerald-900 flex items-start gap-2"
+                >
                   <span className="inline-block w-1 h-1 rounded-full bg-emerald-500 mt-1.5 shrink-0" />
                   <span>{pt}</span>
                 </li>
@@ -71,7 +78,10 @@ export const EvaluationCard: React.FC<EvaluationCardProps> = ({
             </h5>
             <ul className="space-y-1.5 pl-1">
               {evaluation.areasToImprove.map((pt, idx) => (
-                <li key={idx} className="text-xs text-amber-900 flex items-start gap-2">
+                <li
+                  key={idx}
+                  className="text-xs text-amber-900 flex items-start gap-2"
+                >
                   <span className="inline-block w-1 h-1 rounded-full bg-amber-500 mt-1.5 shrink-0" />
                   <span>{pt}</span>
                 </li>
@@ -87,7 +97,10 @@ export const EvaluationCard: React.FC<EvaluationCardProps> = ({
             <Lightbulb className="w-4 h-4 text-indigo-600" />
             Câu trả lời mẫu đề xuất
           </h5>
-          <p className="text-xs text-slate-700 leading-relaxed italic bg-slate-50/60 p-2.5 rounded border border-slate-100">
+          <p
+            className="text-xs text-slate-700 leading-relaxed italic bg-slate-50/60 p-2.5 rounded border border-slate-100 whitespace-pre-wrap break-words"
+            style={{ overflowWrap: "anywhere" }}
+          >
             "{evaluation.suggestedAnswer}"
           </p>
         </div>
