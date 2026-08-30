@@ -60,7 +60,7 @@ export const Login: React.FC = () => {
           AI Mock Interviewer
         </h2>
         <p className="mt-1.5 text-sm text-slate-600">
-          Luyện phỏng vấn kỹ thuật cho vị trí Backend Intern và Fresher
+          Luyện phỏng vấn kỹ thuật cho vị trí Intern và Fresher
         </p>
       </div>
 

@@ -58,9 +58,6 @@ export const Register: React.FC = () => {
         <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
           Tạo tài khoản
         </h2>
-        <p className="mt-1.5 text-sm text-slate-600">
-          Bắt đầu luyện phỏng vấn Java & Spring Boot với AI
-        </p>
       </div>
 
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md px-4 sm:px-0">
