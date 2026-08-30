@@ -1,20 +1,34 @@
-import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useInterview } from '../context/InterviewContext';
-import { Card, CardContent, CardHeader, CardFooter } from '../components/ui/Card';
-import { Upload, FileText, BriefcaseBusiness, Sparkles, Play, AlertCircle, FileUp, FileSearch } from 'lucide-react';
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useInterview } from "../context/InterviewContext";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardFooter,
+} from "../components/ui/Card";
+import {
+  Upload,
+  FileText,
+  BriefcaseBusiness,
+  Sparkles,
+  Play,
+  AlertCircle,
+  FileUp,
+  FileSearch,
+} from "lucide-react";
 
 export const CustomInterview: React.FC = () => {
   const { startCustomInterview, isCreating } = useInterview();
   const navigate = useNavigate();
 
-  const [jobTitle, setJobTitle] = useState('Backend Developer');
-  const [cvText, setCvText] = useState('');
-  const [jdText, setJdText] = useState('');
+  const [jobTitle, setJobTitle] = useState("Backend Developer");
+  const [cvText, setCvText] = useState("");
+  const [jdText, setJdText] = useState("");
   const [questionCount, setQuestionCount] = useState<number>(10);
   const [cvFile, setCvFile] = useState<File | null>(null);
   const [pdfPreviewUrl, setPdfPreviewUrl] = useState<string | null>(null);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
 
   useEffect(() => {
     return () => {
@@ -27,18 +41,20 @@ export const CustomInterview: React.FC = () => {
   const handleCvUpload = (file?: File) => {
     if (!file) return;
 
-    if (file.type !== 'application/pdf') {
-      setError('Vui lòng chọn file PDF cho CV để xem trước trực tiếp trong trình duyệt.');
+    if (file.type !== "application/pdf") {
+      setError(
+        "Vui lòng chọn file PDF cho CV để xem trước trực tiếp trong trình duyệt.",
+      );
       setCvFile(null);
       setPdfPreviewUrl((prev) => {
         if (prev) URL.revokeObjectURL(prev);
         return null;
       });
-      setCvText('');
+      setCvText("");
       return;
     }
 
-    setError('');
+    setError("");
     const nextPreviewUrl = URL.createObjectURL(file);
 
     setPdfPreviewUrl((prev) => {
@@ -52,20 +68,24 @@ export const CustomInterview: React.FC = () => {
   const handleStart = async () => {
     const hasCv = cvText.trim() || !!cvFile;
     if (!hasCv || !jdText.trim()) {
-      setError('Bạn cần tải lên CV PDF và nhập mô tả JD trước khi bắt đầu phỏng vấn.');
+      setError(
+        "Bạn cần tải lên CV PDF và nhập mô tả JD trước khi bắt đầu phỏng vấn.",
+      );
       return;
     }
-    setError('');
+    setError("");
     try {
       await startCustomInterview({
         jobTitle,
-        cvText: cvText.trim() || `CV đã tải lên: ${cvFile?.name ?? 'CV.pdf'}`,
+        cvText: cvText.trim() || `CV đã tải lên: ${cvFile?.name ?? "CV.pdf"}`,
         jdText,
         questionCount,
       });
-      navigate('/interview-room');
+      navigate("/interview-room");
     } catch (err: any) {
-      setError(err?.message || 'Không thể tạo buổi phỏng vấn. Vui lòng thử lại.');
+      setError(
+        err?.message || "Không thể tạo buổi phỏng vấn. Vui lòng thử lại.",
+      );
     }
   };
 
@@ -76,7 +96,8 @@ export const CustomInterview: React.FC = () => {
           Tạo buổi phỏng vấn theo CV & JD
         </h1>
         <p className="mt-1 text-sm text-slate-600">
-          Tải lên CV và mô tả công việc, sau đó AI sẽ sinh bộ câu hỏi 1-1 và tiến hành phỏng vấn như một buổi PV trực tiếp.
+          Tải lên CV và mô tả công việc, sau đó AI sẽ sinh bộ câu hỏi 1-1 và
+          tiến hành phỏng vấn như một buổi PV trực tiếp.
         </p>
       </div>
 
@@ -84,7 +105,9 @@ export const CustomInterview: React.FC = () => {
         <CardHeader className="bg-slate-50/50">
           <div className="flex items-center gap-2">
             <Sparkles className="w-5 h-5 text-indigo-600" />
-            <h2 className="text-base font-bold text-slate-900">Thông tin buổi phỏng vấn</h2>
+            <h2 className="text-base font-bold text-slate-900">
+              Thông tin buổi phỏng vấn
+            </h2>
           </div>
         </CardHeader>
 
@@ -110,17 +133,21 @@ export const CustomInterview: React.FC = () => {
                 Số câu hỏi
               </label>
               <div className="grid grid-cols-2 gap-3">
-                {[10, 20].map((count) => {
+                {[10, 20, 50, 100].map((count) => {
+                  const isDisabled = count === 50 || count === 100;
                   const isSelected = questionCount === count;
                   return (
                     <button
                       key={count}
                       type="button"
-                      onClick={() => setQuestionCount(count)}
+                      disabled={isDisabled}
+                      onClick={() => !isDisabled && setQuestionCount(count)}
                       className={`rounded-xl border px-4 py-3 text-sm font-semibold transition-all ${
-                        isSelected
-                          ? 'border-indigo-600 bg-indigo-50 text-indigo-700 ring-2 ring-indigo-100'
-                          : 'border-slate-200 bg-white text-slate-700 hover:border-slate-300'
+                        isDisabled
+                          ? "border-slate-200 bg-slate-100 text-slate-400 cursor-not-allowed opacity-70"
+                          : isSelected
+                            ? "border-indigo-600 bg-indigo-50 text-indigo-700 ring-2 ring-indigo-100"
+                            : "border-slate-200 bg-white text-slate-700 hover:border-slate-300"
                       }`}
                     >
                       {count} câu hỏi
@@ -169,7 +196,9 @@ export const CustomInterview: React.FC = () => {
                     <FileUp className="h-12 w-12 text-slate-400" />
                     <div>
                       <p className="text-base font-semibold">Tải CV PDF lên</p>
-                      <p className="mt-1 text-xs text-slate-500">Nhấn vào đây để chọn file PDF</p>
+                      <p className="mt-1 text-xs text-slate-500">
+                        Nhấn vào đây để chọn file PDF
+                      </p>
                     </div>
                   </label>
                 )}
@@ -202,7 +231,8 @@ export const CustomInterview: React.FC = () => {
         <CardFooter className="flex flex-col sm:flex-row items-center justify-between gap-3 px-6 py-4 border-t border-slate-200">
           <div className="flex items-center gap-2 text-xs text-slate-500">
             <FileText className="w-4 h-4 text-slate-400" />
-            Hệ thống sẽ tạo câu hỏi dựa trên độ khớp CV/JD và mức độ phù hợp với vị trí ứng tuyển.
+            Hệ thống sẽ tạo câu hỏi dựa trên độ khớp CV/JD và mức độ phù hợp với
+            vị trí ứng tuyển.
           </div>
 
           <button
